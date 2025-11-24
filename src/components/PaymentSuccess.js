@@ -93,6 +93,12 @@ const PaymentSuccess = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#052637] via-[#0d3e59] to-[#7a1c18] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+        {sessionDetails?.webhookResult && (
+          <p className="text-sm font-semibold text-green-700 uppercase tracking-wide mb-3">
+            {sessionDetails.webhookResult}
+          </p>
+        )}
+
         <SuccessBadge />
 
         <h1 className="text-3xl md:text-4xl font-bold text-[#042D43] mb-3">
@@ -211,19 +217,28 @@ const InfoRow = ({ label, value, highlight = false, mono = false, copyable = fal
 };
 
 const normalizeSessionResponse = (payload) => {
+  if (!payload || typeof payload !== 'object') {
+    return null;
+  }
+
+  // Some endpoints wrap the useful data under "data", others under "data.session"
+  // or directly return the session object. Handle each case.
+  const rawData = payload.data || payload;
   const session =
-    payload?.data?.session ||
-    payload?.data ||
-    payload?.session ||
-    payload?.checkout_session ||
-    payload;
+    rawData.session ||
+    rawData.checkout_session ||
+    rawData.data ||
+    rawData;
 
   if (!session || typeof session !== 'object') {
     return null;
   }
 
   const customerDetails =
-    session.customer_details || session.customer || session.customer_object || {};
+    session.customer_details ||
+    session.customer ||
+    session.customer_object ||
+    {};
   const metadata = session.metadata || {};
   const lineItem =
     session.line_items?.data?.[0] ||
@@ -232,7 +247,8 @@ const normalizeSessionResponse = (payload) => {
     {};
 
   const recurringInterval = lineItem.price?.recurring?.interval;
-  const amount =
+  const amountRaw =
+    session.amount ??
     session.amount_total ??
     session.amount_subtotal ??
     session.total_details?.amount_due ??
@@ -240,19 +256,21 @@ const normalizeSessionResponse = (payload) => {
     lineItem.amount_subtotal ??
     null;
 
-  const currency =
+  const currencyRaw =
     session.currency ||
     lineItem.price?.currency ||
     session.payment_intent?.currency ||
     'usd';
 
   const planName =
+    session.plan_name ||
     metadata.plan_name ||
     lineItem.description ||
     lineItem.price?.nickname ||
     'Subscription';
 
   const billingCycle =
+    session.billing_cycle ||
     metadata.billing_cycle ||
     (recurringInterval === 'year'
       ? 'Annual'
@@ -260,18 +278,49 @@ const normalizeSessionResponse = (payload) => {
       ? 'Monthly'
       : recurringInterval || 'Recurring');
 
-  const status = session.status || session.payment_status || session.subscription_status;
+  const status =
+    session.status ||
+    session.payment_status ||
+    session.subscription_status;
+
+  const amountFormatted =
+    session.amount_formatted ||
+    (amountRaw !== null
+      ? formatCurrency(
+          amountRaw >= 1000 ? amountRaw / 100 : amountRaw,
+          currencyRaw
+        )
+      : '—');
 
   return {
-    customerName: metadata.customer_name || customerDetails.name || '—',
-    email: metadata.email || customerDetails.email || session.customer_email || '—',
-    phone: metadata.phone || customerDetails.phone || '—',
+    customerName:
+      session.customer_name ||
+      metadata.customer_name ||
+      customerDetails.name ||
+      '—',
+    email:
+      session.customer_email ||
+      metadata.email ||
+      customerDetails.email ||
+      session.customer_email ||
+      '—',
+    phone:
+      session.customer_phone ||
+      metadata.phone ||
+      customerDetails.phone ||
+      '—',
     planName,
     billingCycle,
-    amountPaidFormatted:
-      amount !== null ? formatCurrency(amount / 100, currency) : '—',
+    amountPaidFormatted: amountFormatted,
     statusLabel: formatStatus(status),
     isActive: /active|complete/i.test(status || ''),
+    webhookResult:
+      session.webhook_result ||
+      session.webhook_status ||
+      session.webhook_message ||
+      payload.webhook_result ||
+      payload.webhook_status ||
+      null,
   };
 };
 
