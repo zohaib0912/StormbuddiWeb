@@ -1,0 +1,250 @@
+import React, { useState, useEffect } from 'react';
+
+const Header = () => {
+  const [isSticky, setIsSticky] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: '#home', label: 'Home' },
+    { href: '#features', label: 'Features' },
+    { href: '#pricing', label: 'Pricing' },
+    { href: '#about-us', label: 'About Us' },
+    { href: '#contact-us', label: 'Contact Us' },
+    { href: 'https://app.stormbuddi.com/login', label: 'Login', external: true },
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => document.body.classList.remove('overflow-hidden');
+  }, [isMobileMenuOpen]);
+
+  return (
+    <header 
+      id="site-header" 
+      className="site-header header-absolute absolute top-0 left-0 right-0 z-[1000] w-full"
+    >
+      {/* Header Topbar */}
+      <div className="header-topbar navbar elements-2 h-0 md:h-[6px] w-full bg-transparent"></div>
+
+      {/* Sticky Outer */}
+      <div className="sticky-outer" data-stickyup="0">
+        <div
+          className={`sticky-head transition-all duration-300 w-full ${
+            isSticky
+              ? 'fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.08)] z-[999]'
+              : 'bg-transparent'
+          }`}
+        >
+          <div className="header-navbar navbar elements-3 bg-white md:bg-transparent">
+            <div className="container-fluid max-w-full px-4 md:px-10 mx-auto">
+              <div className="flex items-center justify-between min-h-[110px] md:min-h-[110px] relative">
+                {/* Mobile Menu Toggle */}
+                <div className="md:hidden flex items-center justify-start order-1 md:order-none">
+                  <button
+                    type="button"
+                    aria-label="Open navigation menu"
+                    className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-[#d9d9d9] bg-white text-[#042D43] shadow-sm"
+                    onClick={() => setIsMobileMenuOpen(true)}
+                  >
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="18" x2="15" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Left: Logo */}
+                <ul className="nav navbar-ul element-left right-element-exist flex items-center justify-center md:justify-start flex-1 md:flex-none md:shrink-0 m-0 p-0 list-none order-2 md:order-none">
+                  <li className="header-titles-wrapper">
+                    <div className="header-titles">
+                      <a className="site-link" href="/">
+                        <img
+                          width="420"
+                          height="110"
+                          className={`img-fluid site-logo max-h-[110px] md:max-h-[110px] h-auto w-auto object-contain ${isSticky ? 'hidden' : 'block'}`}
+                          src="/images/logo.png"
+                          alt="StormBuddi Logo"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.parentElement) {
+                              e.target.parentElement.innerHTML = '<span style="font-size: 24px; font-weight: bold; color: #042D43;">STORM BUDDI</span>';
+                            }
+                          }}
+                        />
+                      </a>
+                      <a className="site-link sticky-logo-link" href="/">
+                        <img
+                          width="420"
+                          height="110"
+                          className={`img-fluid sticky-logo max-h-[110px] md:max-h-[110px] h-auto w-auto object-contain ${!isSticky ? 'hidden' : 'block'}`}
+                          src="/images/logo.png"
+                          alt="StormBuddi Logo"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.parentElement) {
+                              e.target.parentElement.innerHTML = '<span style="font-size: 20px; font-weight: bold; color: #042D43;">STORM BUDDI</span>';
+                            }
+                          }}
+                        />
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+
+                {/* Mobile Spacer */}
+                <div className="md:hidden order-3 w-11 md:order-none" />
+
+                {/* Center: Navigation */}
+                <ul className="nav navbar-ul pull-center justify-content-center right-element-exist hidden md:flex items-center flex-1 justify-center gap-8 list-none m-0 p-0">
+                  <li className="header-navigation-wrapper">
+                    <nav className="primary-menu-wrapper" aria-label="Horizontal">
+                      <ul className="nav wp-menu primary-menu flex items-center gap-8 list-none m-0 p-0 relative">
+                        {navLinks.map(({ href, label, external }) => (
+                          <li key={label} className="menu-item menu-item-type-custom menu-item-object-custom">
+                            <a
+                              href={href}
+                              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                              className="text-[#042D43] no-underline text-[14px] font-semibold uppercase tracking-[0.5px] transition-colors duration-300 inline-block hover:text-[#A83119]"
+                            >
+                              {label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  </li>
+                </ul>
+
+                {/* Right: Learn More Button */}
+                <ul className="nav navbar-ul pull-right justify-content-end right-element-exist hidden md:flex items-center shrink-0 m-0 p-0 list-none">
+                  <li>
+                    <a 
+                      href="#contact-us" 
+                      className="cea-button-link cea-button inline-flex items-center gap-2 bg-[#A83119] text-white no-underline py-3 px-6 rounded text-[14px] font-semibold uppercase tracking-[0.5px] transition-all duration-300 border-none cursor-pointer whitespace-nowrap hover:bg-[#D1452A] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,49,25,0.4)]"
+                    >
+                      <span className="cea-button-text flex items-center gap-2">
+                        LEARN MORE 
+                        <svg 
+                          width="14" 
+                          height="14" 
+                          viewBox="0 0 16 16" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2"
+                          className="inline-block"
+                        >
+                          <path d="M5 11L11 5M11 5H5M11 5V11" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      <div
+        className={`fixed inset-0 z-[1200] md:hidden transition-opacity duration-300 ${
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        <div
+          className={`absolute left-0 top-0 h-full w-72 bg-white shadow-2xl p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <a
+              href="/"
+              className="inline-flex items-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <img
+                src="/images/logo.png"
+                alt="StormBuddi Logo"
+                className="h-60 w-auto object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML = '<span style="font-size:18px;font-weight:700;color:#042D43;">StormBuddi</span>';
+                }}
+              />
+            </a>
+            <button
+              type="button"
+              aria-label="Close navigation menu"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#d9d9d9] text-[#042D43]"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <ul className="flex flex-col gap-4 list-none m-0 p-0">
+            {navLinks.map(({ href, label, external }) => (
+              <li key={`mobile-${label}`}>
+                <a
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  className="text-[#042D43] no-underline text-lg font-semibold uppercase tracking-[1px] inline-block"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
