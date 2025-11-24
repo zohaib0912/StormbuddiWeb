@@ -7,7 +7,7 @@ const getDefaultEndpoint = () => {
 
   // Always use direct API URL to avoid proxy issues
   // The proxy should handle CORS, but if it's causing 401, use direct connection
-  return 'http://192.168.1.182:8000/api/pricing';
+  return 'https://app.stormbuddi.com/api/pricing';
 };
 
 const API_ENDPOINT = getDefaultEndpoint();

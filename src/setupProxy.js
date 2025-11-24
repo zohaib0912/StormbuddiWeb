@@ -9,7 +9,7 @@ module.exports = function setupProxy(app) {
   app.use(
     '/api/pricing',
     createProxyMiddleware({
-      target: 'http://192.168.1.182:8000',
+      target: 'https://app.stormbuddi.com/',
       changeOrigin: true,
       logLevel: 'debug',
       pathRewrite: {

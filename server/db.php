@@ -28,10 +28,10 @@ function getDBConnection(): PDO
         return $pdo;
     }
 
-    $host = env_value('DB_HOST', '192.168.1.182');
-    $database = env_value('DB_NAME', 'roofr');
-    $username = env_value('DB_USER', 'root');
-    $password = env_value('DB_PASS', '');
+    $host = env_value('DB_HOST', '104.236.67.76');
+    $database = env_value('DB_NAME', 'greqcgakpx');
+    $username = env_value('DB_USER', 'greqcgakpx');
+    $password = env_value('DB_PASS', 'kXgXqp2peF');
     $charset = env_value('DB_CHARSET', 'utf8mb4');
 
     if ($database === '' || $username === '' || $password === '') {
