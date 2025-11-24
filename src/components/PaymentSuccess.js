@@ -16,19 +16,11 @@ const PaymentSuccess = () => {
   const [sessionDetails, setSessionDetails] = useState(null);
   const [error, setError] = useState(null);
 
-  const lookupUrls = useMemo(() => {
-    if (!sessionId) return [];
+  const sessionLookupUrl = useMemo(() => {
+    if (!sessionId) return null;
     const base = SESSION_LOOKUP_BASE.replace(/\/$/, '');
     const encoded = encodeURIComponent(sessionId);
-    return [
-      `${base}/session/${encoded}`,
-      `${base}/sessions/${encoded}`,
-      `${base}/checkout/session/${encoded}`,
-      `${base}/checkout/${encoded}`,
-      `${base}/session?session_id=${encoded}`,
-      `${base}/sessions?session_id=${encoded}`,
-      `${base}/checkout/session?session_id=${encoded}`,
-    ];
+    return `${base}/checkout/session/${encoded}`;
   }, [sessionId]);
 
   useEffect(() => {
@@ -45,52 +37,40 @@ const PaymentSuccess = () => {
       setIsLoading(true);
       setError(null);
 
-      for (const url of lookupUrls) {
-        try {
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: { Accept: 'application/json' },
-            signal: controller.signal,
-          });
+      try {
+        const response = await fetch(sessionLookupUrl, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          signal: controller.signal,
+        });
 
-          if (!response.ok) {
-            // Continue trying other endpoints unless it's a 401/403 (likely final).
-            if ([401, 403].includes(response.status)) {
-              const errorText = await response.text();
-              throw new Error(
-                errorText || 'Unauthorized to retrieve session details. Please contact support.'
-              );
-            }
-            continue;
-          }
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            errorText || `Failed to load session details (${response.status}).`
+          );
+        }
 
-          const payload = await response.json();
-          const normalized = normalizeSessionResponse(payload);
-          if (!normalized) {
-            continue;
-          }
+        const payload = await response.json();
+        const normalized = normalizeSessionResponse(payload);
 
-          if (isMounted) {
-            setSessionDetails(normalized);
-            setIsLoading(false);
-            return;
-          }
-        } catch (fetchError) {
-          if (fetchError.name === 'AbortError') {
-            return;
-          }
-          console.error('[PaymentSuccess] Unable to fetch session details:', fetchError);
-          if (isMounted) {
-            setError(fetchError.message || 'Failed to load session details.');
-            setIsLoading(false);
-          }
+        if (!normalized) {
+          throw new Error('Session details were empty. Please contact support.');
+        }
+
+        if (isMounted) {
+          setSessionDetails(normalized);
+          setIsLoading(false);
+        }
+      } catch (fetchError) {
+        if (fetchError.name === 'AbortError') {
           return;
         }
-      }
-
-      if (isMounted) {
-        setError('No session details were returned. Please contact support.');
-        setIsLoading(false);
+        console.error('[PaymentSuccess] Unable to fetch session details:', fetchError);
+        if (isMounted) {
+          setError(fetchError.message || 'Failed to load session details.');
+          setIsLoading(false);
+        }
       }
     };
 
@@ -100,7 +80,7 @@ const PaymentSuccess = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [lookupUrls, sessionId]);
+  }, [sessionLookupUrl, sessionId]);
 
   const handleAccessAccount = () => {
     window.location.href = 'https://app.stormbuddi.com';
