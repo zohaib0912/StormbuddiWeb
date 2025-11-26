@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 
 const API_BASE = 'https://app.stormbuddi.com/api';
 const CHECK_EMAIL_ENDPOINT = `${API_BASE}/pricing/check-email`;
-const CHECKOUT_ENDPOINT = `${API_BASE}/client-pricing/checkout`;
+const CHECKOUT_ENDPOINT = `${API_BASE}/pricing/checkout`;
+const EMAIL_EXISTS_MESSAGE = 'This email is already registered. Please enter another email.';
 
-export default function EmailModal({ isOpen, onClose, planId, planName }) {
+export default function EmailModal({
+  isOpen,
+  onClose,
+  planId,
+  planName,
+  billingCycle = 'monthly'
+}) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -41,35 +48,25 @@ export default function EmailModal({ isOpen, onClose, planId, planName }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: trimmedEmail }),
+        body: JSON.stringify({
+          plan_id: planId,
+          email: trimmedEmail,
+          billing_cycle: billingCycle,
+        }),
       });
 
+      const emailPayload = await emailResponse.json().catch(() => null);
+
       if (emailResponse.status === 409) {
-        setError('Email already exists. Please enter another email.');
-        setIsLoading(false);
-        return;
-      }
-
-      let emailData = {};
-      try {
-        emailData = await emailResponse.json();
-      } catch (_) {
-        // ignore parse errors; we'll fall back to defaults
-      }
-
-      const emailTaken =
-        emailData.exists === true ||
-        emailData.available === false ||
-        /already/i.test(emailData?.message || '');
-
-      if (emailTaken) {
-        setError('Email already exists. Please enter another email.');
+        setError(emailPayload?.message || EMAIL_EXISTS_MESSAGE);
         setIsLoading(false);
         return;
       }
 
       if (!emailResponse.ok) {
-        throw new Error(emailData?.message || 'Unable to verify email. Please try again.');
+        setError(emailPayload?.error || 'Unable to verify email. Please try again.');
+        setIsLoading(false);
+        return;
       }
 
       const response = await fetch(CHECKOUT_ENDPOINT, {
@@ -80,32 +77,39 @@ export default function EmailModal({ isOpen, onClose, planId, planName }) {
         },
         body: JSON.stringify({
           plan_id: planId,
+          billing_cycle: billingCycle,
           email: trimmedEmail,
         }),
       });
 
+      const checkoutPayload = await response.json().catch(() => null);
+
       if (response.status === 409) {
-        setError('Email already exists. Please enter another email.');
+        setError(checkoutPayload?.message || EMAIL_EXISTS_MESSAGE);
         setIsLoading(false);
         return;
       }
 
-      let data = {};
-      try {
-        data = await response.json();
-      } catch (_) {
-        data = {};
+      const redirectUrl =
+        checkoutPayload?.checkout_url || checkoutPayload?.url;
+      const succeeded =
+        checkoutPayload?.success ?? Boolean(redirectUrl);
+
+      if (!response.ok || !redirectUrl || !succeeded) {
+        setError(checkoutPayload?.error || 'Unable to start checkout. Please try again.');
+        setIsLoading(false);
+        return;
       }
 
-      if (data.success && data.checkout_url) {
-        window.location.href = data.checkout_url;
-      } else {
-        setError(data.error || 'Something went wrong. Please try again.');
-        setIsLoading(false);
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-      setError(err.message || 'Failed to connect. Please try again.');
+      window.location.href = redirectUrl;
+    } catch (fetchError) {
+      console.error('Checkout error:', fetchError);
+      const fallbackMessage =
+        fetchError instanceof TypeError &&
+        /failed to fetch/i.test(fetchError.message || '')
+          ? EMAIL_EXISTS_MESSAGE
+          : 'Failed to connect. Please try again.';
+      setError(fallbackMessage);
       setIsLoading(false);
     }
   };
