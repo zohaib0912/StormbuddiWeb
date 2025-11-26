@@ -93,12 +93,6 @@ const PaymentSuccess = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#052637] via-[#0d3e59] to-[#7a1c18] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
-        {sessionDetails?.webhookResult && (
-          <p className="text-sm font-semibold text-green-700 uppercase tracking-wide mb-3">
-            {sessionDetails.webhookResult}
-          </p>
-        )}
-
         <SuccessBadge />
 
         <h1 className="text-3xl md:text-4xl font-bold text-[#042D43] mb-3">
@@ -314,13 +308,6 @@ const normalizeSessionResponse = (payload) => {
     amountPaidFormatted: amountFormatted,
     statusLabel: formatStatus(status),
     isActive: /active|complete/i.test(status || ''),
-    webhookResult:
-      session.webhook_result ||
-      session.webhook_status ||
-      session.webhook_message ||
-      payload.webhook_result ||
-      payload.webhook_status ||
-      null,
   };
 };
 

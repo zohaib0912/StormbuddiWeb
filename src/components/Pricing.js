@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import EmailModal from './EmailModal';
 
 const getDefaultEndpoint = () => {
   if (process.env.REACT_APP_PRICING_API) {
@@ -76,17 +77,27 @@ const normalizePlans = (plans = []) => {
 
 const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState('professional');
-  const [processingPlan, setProcessingPlan] = useState(null);
   const [isAnnual, setIsAnnual] = useState(false);
   const [remotePlans, setRemotePlans] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const [checkoutError, setCheckoutError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPlan, setModalPlan] = useState(null);
+  const modalPlanId = useMemo(() => {
+    if (!modalPlan?.dbId) return null;
+    const parsedId =
+      typeof modalPlan.dbId === 'number'
+        ? modalPlan.dbId
+        : parseInt(modalPlan.dbId, 10);
+    return Number.isNaN(parsedId) ? null : parsedId;
+  }, [modalPlan]);
 
   const basePlans = useMemo(
     () => ([
     {
       id: 'starter',
+      dbId: 1,
       name: 'Starter',
       annualLabel: 'Starter',
       monthlyPrice: 69,
@@ -100,6 +111,7 @@ const Pricing = () => {
     },
     {
       id: 'professional',
+      dbId: 2,
       name: 'Professional',
       annualLabel: 'Professional Plan',
       monthlyPrice: 95,
@@ -113,6 +125,7 @@ const Pricing = () => {
     },
     {
       id: 'enterprise',
+      dbId: 3,
       name: 'Enterprise',
       annualLabel: 'Enterprise Plan',
       monthlyPrice: 350,
@@ -248,162 +261,15 @@ const Pricing = () => {
 
   const plans = isAnnual ? activeAnnualPlans : activeMonthlyPlans;
 
-  // Handle Stripe checkout
-  const handleCheckout = async (plan) => {
-    setCheckoutError(null);
-    setProcessingPlan(plan.id);
-    
-    try {
-      // Use the Laravel API route for checkout
-      const checkoutUrl = `${API_ENDPOINT}/checkout`;
-
-      // Note: We're NOT sending success_url and cancel_url because Laravel's URL validator
-      // rejects URLs containing the {CHECKOUT_SESSION_ID} placeholder (it's not valid URL format).
-      // Since these fields are nullable in your backend, it will use default URLs.
-      // TODO: Update backend validation to accept URLs with Stripe placeholders, or update
-      // backend default URLs to match frontend routes (/payment-success, /payment-cancel)
-
-      // Get database plan_id (required by backend)
-      // If plan.dbId doesn't exist, this is a fallback plan without database connection
-      if (!plan.dbId) {
-        throw new Error('Cannot checkout: Plan data not loaded from database. Please refresh the page and try again.');
-      }
-      
-      // Convert to integer (backend expects integer)
-      const planIdInt = typeof plan.dbId === 'number' ? plan.dbId : parseInt(plan.dbId, 10);
-      
-      if (!planIdInt || planIdInt <= 0 || isNaN(planIdInt)) {
-        throw new Error(`Invalid plan ID: ${plan.dbId}. Plan ID must be a positive integer.`);
-      }
-      
-      // Helper function to get user email from various sources
-      const getUserEmail = () => {
-        // Check localStorage for saved email (if user is logged in)
-        try {
-          const savedEmail = localStorage.getItem('user_email') || 
-                            localStorage.getItem('email') ||
-                            sessionStorage.getItem('user_email');
-          if (savedEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(savedEmail.trim())) {
-            return savedEmail.trim();
-          }
-        } catch (e) {
-          // localStorage/sessionStorage not available or access denied
-        }
-        
-        // TODO: If you have a user context/authentication system, get email from there
-        // Example: const userEmail = useUser()?.email;
-        
-        return null;
-      };
-      
-      // Prepare request body matching backend expectations
-      // Omitting success_url and cancel_url - Laravel's URL validator rejects placeholders
-      // Backend will use defaults: url('/subscription/success?session_id={CHECKOUT_SESSION_ID}')
-      //                            and url('/subscription/cancel')
-      const requestBody = {
-        plan_id: planIdInt,  // Backend expects integer plan_id from database
-        // success_url and cancel_url omitted - backend defaults will be used
-      };
-      
-      // Optionally include customer email if available (pre-fills email in Stripe checkout)
-      // This enables the new customer_email feature you added to the Stripe session
-      const customerEmail = getUserEmail();
-      if (customerEmail) {
-        requestBody.email = customerEmail;
-        console.log('📧 [Checkout] Including customer email:', customerEmail);
-      }
-
-      console.log('🛒 [Checkout] Creating checkout session:', { 
-        checkoutUrl, 
-        plan: { id: plan.id, name: plan.name, displayName: plan.displayName, price: plan.price },
-        requestBody 
-      });
-
-      const response = await fetch(checkoutUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorData;
-        
-        try {
-          errorData = JSON.parse(errorText);
-        } catch (e) {
-          errorData = { message: errorText || `HTTP error! status: ${response.status}` };
-        }
-        
-        console.error('❌ [Checkout] Error response:', {
-          status: response.status,
-          statusText: response.statusText,
-          errorData: errorData,
-          rawResponse: errorText
-        });
-        
-        // Handle Laravel validation errors (422)
-        if (response.status === 422) {
-          let errorMessage = 'Validation failed';
-          
-          if (errorData.errors) {
-            // Laravel validation errors format: { message: "...", errors: { field: [...] } }
-            const validationErrors = Object.entries(errorData.errors)
-              .map(([field, messages]) => {
-                const msgList = Array.isArray(messages) ? messages : [messages];
-                return `${field}: ${msgList.join(', ')}`;
-              })
-              .join('; ');
-            errorMessage = `Validation failed - ${validationErrors}`;
-          } else if (errorData.message) {
-            errorMessage = `Validation failed: ${errorData.message}`;
-          }
-          
-          console.error('❌ [Checkout] Validation details:', errorData);
-          throw new Error(errorMessage);
-        }
-        
-        // Handle other error formats
-        const errorMessage = errorData.message || 
-                           errorData.error || 
-                           errorData.data?.message || 
-                           `Failed to create checkout session (${response.status})`;
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      console.log('✅ [Checkout] Response received:', data);
-      
-      // Backend returns: { success: true, checkout_url: "...", session_id: "..." }
-      if (data.success && data.checkout_url) {
-        // Redirect to Stripe Checkout
-        console.log('🔄 [Checkout] Redirecting to Stripe:', data.checkout_url);
-        window.location.href = data.checkout_url;
-      } else if (data.checkout_url) {
-        // Handle case where success field is missing but URL exists
-        console.log('🔄 [Checkout] Redirecting to Stripe:', data.checkout_url);
-        window.location.href = data.checkout_url;
-      } else if (data.url) {
-        // Fallback: check for 'url' field
-        console.log('🔄 [Checkout] Redirecting to Stripe:', data.url);
-        window.location.href = data.url;
-      } else if (data.session_id || data.sessionId) {
-        // If we have sessionId but no URL, construct it
-        const sessionId = data.session_id || data.sessionId;
-        const stripeUrl = `https://checkout.stripe.com/pay/${sessionId}`;
-        console.log('🔄 [Checkout] Redirecting to Stripe with sessionId:', stripeUrl);
-        window.location.href = stripeUrl;
-      } else {
-        throw new Error('No checkout URL or session_id received from server');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      setCheckoutError(error.message || 'Failed to initiate checkout. Please try again.');
-      setProcessingPlan(null);
+  const handleGetStarted = (plan) => {
+    if (!plan?.dbId) {
+      setCheckoutError('Plan data not ready yet. Please refresh and try again.');
+      return;
     }
+
+    setCheckoutError(null);
+    setModalPlan(plan);
+    setIsModalOpen(true);
   };
 
   return (
@@ -543,11 +409,11 @@ const Pricing = () => {
                 className="w-full py-3.5 px-8 rounded-full font-semibold text-base border-2 transition-all duration-300 shadow-[0_10px_25px_rgba(168,49,25,0.25)] bg-[#A83119] text-white border-[#A83119] hover:bg-[#D1452A] hover:-translate-y-0.5 disabled:opacity-80"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleCheckout(plan);
+                  handleGetStarted(plan);
                 }}
-                disabled={processingPlan === planId}
+                disabled={!plan?.dbId}
               >
-                {processingPlan === planId ? 'Processing...' : 'Select Plan'}
+                Get Started
               </button>
             </div>
           )})}
@@ -572,6 +438,15 @@ const Pricing = () => {
           </div>
         </div>
       </div>
+      <EmailModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setModalPlan(null);
+        }}
+        planId={modalPlanId}
+        planName={modalPlan?.displayName || modalPlan?.name}
+      />
     </section>
   );
 };
