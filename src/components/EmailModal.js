@@ -37,15 +37,27 @@ export default function EmailModal({ isOpen, onClose, planId, planName }) {
 
       const emailResponse = await fetch(CHECK_EMAIL_ENDPOINT, {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email: trimmedEmail }),
       });
 
-      const emailData = await emailResponse.json().catch(() => ({}));
+      if (emailResponse.status === 409) {
+        setError('Email already exists. Please enter another email.');
+        setIsLoading(false);
+        return;
+      }
+
+      let emailData = {};
+      try {
+        emailData = await emailResponse.json();
+      } catch (_) {
+        // ignore parse errors; we'll fall back to defaults
+      }
+
       const emailTaken =
-        emailResponse.status === 409 ||
         emailData.exists === true ||
         emailData.available === false ||
         /already/i.test(emailData?.message || '');
@@ -62,6 +74,7 @@ export default function EmailModal({ isOpen, onClose, planId, planName }) {
 
       const response = await fetch(CHECKOUT_ENDPOINT, {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -71,12 +84,17 @@ export default function EmailModal({ isOpen, onClose, planId, planName }) {
         }),
       });
 
-      const data = await response.json();
-
       if (response.status === 409) {
         setError('Email already exists. Please enter another email.');
         setIsLoading(false);
         return;
+      }
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (_) {
+        data = {};
       }
 
       if (data.success && data.checkout_url) {
