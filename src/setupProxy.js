@@ -29,22 +29,25 @@ module.exports = function setupProxy(app) {
     })
   );
 
-  // Proxy for signup API (local Node.js server)
-  app.use(
-    '/api/signup',
-    createProxyMiddleware({
-      target: 'http://localhost:5000',
-      changeOrigin: true,
-      logLevel: 'debug',
-      onProxyReq: (proxyReq, req, res) => {
-        proxyReq.setHeader('Accept', 'application/json');
-        proxyReq.setHeader('Content-Type', 'application/json');
-        console.log('Proxying signup request to:', proxyReq.path);
-      },
-      onError: (err, req, res) => {
-        console.error('Signup proxy error:', err);
-      },
-    })
-  );
+  // Proxy for signup API (local Node.js server - only in development)
+  // In production on Vercel, the API route is handled directly by the serverless function
+  if (process.env.NODE_ENV === 'development') {
+    app.use(
+      '/api/signup',
+      createProxyMiddleware({
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        logLevel: 'debug',
+        onProxyReq: (proxyReq, req, res) => {
+          proxyReq.setHeader('Accept', 'application/json');
+          proxyReq.setHeader('Content-Type', 'application/json');
+          console.log('Proxying signup request to:', proxyReq.path);
+        },
+        onError: (err, req, res) => {
+          console.error('Signup proxy error:', err);
+        },
+      })
+    );
+  }
 };
 
