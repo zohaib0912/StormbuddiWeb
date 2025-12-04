@@ -99,11 +99,11 @@ const Signup = () => {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
-      <main className="flex-grow py-12 md:py-16 lg:py-20">
+      <main className="flex-grow py-12 md:py-16 lg:py-20 pt-32 md:pt-12">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
             {/* Page Title */}
-            <div className="text-center mb-12 mt-12">
+            <div className="text-center mb-12 mt-0 md:mt-12">
               <h1 className="text-black text-4xl md:text-5xl lg:text-[48px] font-bold mb-4">
                 Sign Up
               </h1>
