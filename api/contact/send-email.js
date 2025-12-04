@@ -81,8 +81,8 @@ module.exports = async function handler(req, res) {
       },
     });
 
-    // Email content
-    const mailOptions = {
+    // Email to Admin - Notification
+    const adminMailOptions = {
       from: `"${fromName}" <${fromEmail}>`,
       to: toEmail,
       replyTo: email,
@@ -111,8 +111,56 @@ module.exports = async function handler(req, res) {
       `,
     };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+    // Email to Customer - Confirmation
+    const customerMailOptions = {
+      from: `"${fromName}" <${fromEmail}>`,
+      to: email,
+      subject: 'Thank You for Contacting StormBuddi',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(to right, #A83119, #D1452A); color: white; padding: 30px 20px; border-radius: 5px 5px 0 0; text-align: center;">
+            <h1 style="margin: 0; font-size: 28px;">Thank You for Contacting Us!</h1>
+          </div>
+          <div style="background: #f9f9f9; padding: 30px 20px; border-radius: 0 0 5px 5px;">
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+              Dear ${name},
+            </p>
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+              Thank you for contacting StormBuddi! We have received your message and appreciate you reaching out to us.
+            </p>
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+              Our team will review your message and you can expect a response within 24 hours.
+            </p>
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0;">
+              If you need immediate assistance, please feel free to call us at <a href="tel:+18009887435" style="color: #A83119; text-decoration: none;">+1 800-988-7435</a>.
+            </p>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
+              <p style="margin: 0; color: #666; font-size: 14px;">Best regards,<br><strong>The StormBuddi Team</strong></p>
+            </div>
+          </div>
+        </div>
+      `,
+      text: `
+        Thank You for Contacting StormBuddi
+        
+        Dear ${name},
+        
+        Thank you for contacting StormBuddi! We have received your message and appreciate you reaching out to us.
+        
+        Our team will review your message and you can expect a response within 24 hours.
+        
+        If you need immediate assistance, please feel free to call us at +1 800-988-7435.
+        
+        Best regards,
+        The StormBuddi Team
+      `,
+    };
+
+    // Send both emails
+    await Promise.all([
+      transporter.sendMail(adminMailOptions),
+      transporter.sendMail(customerMailOptions)
+    ]);
 
     return res.status(200).json({
       success: true,
