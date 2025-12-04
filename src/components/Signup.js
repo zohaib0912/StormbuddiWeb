@@ -112,34 +112,10 @@ const Signup = () => {
               </h2>
             </div>
 
-            {/* Main Content: Image Left, Form Right */}
+            {/* Main Content: Form First on Mobile, Image Left on Desktop */}
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-              {/* Left Side - Image */}
-              <div className="w-full lg:w-1/2 flex items-center justify-center">
-                <div className="relative w-full max-w-lg">
-                  <img
-                    src="/images/Event.jpeg"
-                    alt="StormBuddi"
-                    className="w-full h-auto rounded-2xl shadow-[0_20px_60px_rgba(4,45,67,0.15)] shadow-[0_10px_30px_rgba(0,0,0,0.3)] object-cover"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `
-                        <div class="w-full h-[500px] bg-gradient-to-br from-[#A83119] to-[#D1452A] rounded-2xl flex items-center justify-center">
-                          <div class="text-white text-center">
-                            <svg class="w-32 h-32 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                            </svg>
-                            <p class="text-2xl font-bold">StormBuddi</p>
-                          </div>
-                        </div>
-                      `;
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Right Side - Signup Form */}
-              <div className="w-full lg:w-1/2">
+              {/* Signup Form - First on Mobile, Right on Desktop */}
+              <div className="w-full lg:w-1/2 order-1 lg:order-2">
                 <div className="bg-white rounded-2xl p-8 md:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] border border-gray-200">
                   <form className="signup-form" onSubmit={handleSubmit}>
                     {/* Name Field */}
@@ -256,6 +232,30 @@ const Signup = () => {
                       </button>
                     </div>
                   </form>
+                </div>
+              </div>
+
+              {/* Image - Second on Mobile, Left on Desktop */}
+              <div className="w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
+                <div className="relative w-full max-w-lg">
+                  <img
+                    src="/images/Event.jpeg"
+                    alt="StormBuddi"
+                    className="w-full h-auto rounded-2xl shadow-[0_20px_60px_rgba(4,45,67,0.15)] shadow-[0_10px_30px_rgba(0,0,0,0.3)] object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = `
+                        <div class="w-full h-[500px] bg-gradient-to-br from-[#A83119] to-[#D1452A] rounded-2xl flex items-center justify-center">
+                          <div class="text-white text-center">
+                            <svg class="w-32 h-32 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <p class="text-2xl font-bold">StormBuddi</p>
+                          </div>
+                        </div>
+                      `;
+                    }}
+                  />
                 </div>
               </div>
             </div>
