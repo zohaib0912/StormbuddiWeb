@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navLinks = [
     { href: '#home', label: 'Home' },
@@ -12,6 +15,25 @@ const Header = () => {
     { href: '#contact-us', label: 'Contact Us' },
     { href: 'https://app.stormbuddi.com/login', label: 'Login', external: true },
   ];
+
+  // Handle navigation for hash links
+  const handleNavClick = (e, href) => {
+    // Only handle non-external links
+    if (!href.startsWith('http')) {
+      e.preventDefault();
+      
+      // If we're not on the home page, navigate to home with hash
+      if (location.pathname !== '/') {
+        navigate(`/${href}`);
+      } else {
+        // If we're already on home, just scroll to the section
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,6 +154,7 @@ const Header = () => {
                             <a
                               href={href}
                               {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                              onClick={(e) => !external && handleNavClick(e, href)}
                               className="text-[#042D43] no-underline text-[14px] font-semibold uppercase tracking-[0.5px] transition-colors duration-300 inline-block hover:text-[#A83119]"
                             >
                               {label}
@@ -148,6 +171,7 @@ const Header = () => {
                   <li>
                     <a 
                       href="#contact-us" 
+                      onClick={(e) => handleNavClick(e, '#contact-us')}
                       className="cea-button-link cea-button inline-flex items-center gap-2 bg-[#A83119] text-white no-underline py-3 px-6 rounded text-[14px] font-semibold uppercase tracking-[0.5px] transition-all duration-300 border-none cursor-pointer whitespace-nowrap hover:bg-[#D1452A] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,49,25,0.4)]"
                     >
                       <span className="cea-button-text flex items-center gap-2">
@@ -233,8 +257,13 @@ const Header = () => {
                 <a
                   href={href}
                   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  onClick={(e) => {
+                    if (!external) {
+                      handleNavClick(e, href);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="text-[#042D43] no-underline text-lg font-semibold uppercase tracking-[1px] inline-block"
-                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {label}
                 </a>

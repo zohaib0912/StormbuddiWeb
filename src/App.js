@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -56,8 +56,9 @@ const LandingPage = ({ onStartChat }) => {
   );
 };
 
-function App() {
+function AppContent() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const location = useLocation();
 
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
@@ -66,32 +67,49 @@ function App() {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
-    window.scrollTo(0, 0);
-  }, []);
+    
+    // Handle hash navigation after route change
+    if (location.pathname === '/' && location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else if (location.pathname !== '/') {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
   return (
+    <div className="min-h-screen">
+      <Routes>
+        <Route 
+          path="/" 
+          element={<LandingPage onStartChat={openChat} />} 
+        />
+        <Route 
+          path="/payment-success" 
+          element={<PaymentSuccess />} 
+        />
+        <Route 
+          path="/payment-cancel" 
+          element={<PaymentCancel />} 
+        />
+        <Route 
+          path="/signup" 
+          element={<Signup />} 
+        />
+      </Routes>
+      <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <Router>
-      <div className="min-h-screen">
-        <Routes>
-          <Route 
-            path="/" 
-            element={<LandingPage onStartChat={openChat} />} 
-          />
-          <Route 
-            path="/payment-success" 
-            element={<PaymentSuccess />} 
-          />
-          <Route 
-            path="/payment-cancel" 
-            element={<PaymentCancel />} 
-          />
-          <Route 
-            path="/signup" 
-            element={<Signup />} 
-          />
-        </Routes>
-        <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
-      </div>
+      <AppContent />
     </Router>
   );
 }
