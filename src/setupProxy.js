@@ -29,16 +29,13 @@ module.exports = function setupProxy(app) {
     })
   );
 
-  // Proxy for signup API
+  // Proxy for signup API (local Node.js server)
   app.use(
     '/api/signup',
     createProxyMiddleware({
-      target: 'http://localhost:5001',
+      target: 'http://localhost:5000',
       changeOrigin: true,
       logLevel: 'debug',
-      pathRewrite: {
-        '^/api/signup': '/api/signup',
-      },
       onProxyReq: (proxyReq, req, res) => {
         proxyReq.setHeader('Accept', 'application/json');
         proxyReq.setHeader('Content-Type', 'application/json');

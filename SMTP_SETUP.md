@@ -2,127 +2,130 @@
 
 This guide explains how to configure SMTP email functionality for the signup form.
 
-## Prerequisites
-
-1. An email account with SMTP access (Gmail, Outlook, etc.)
-2. Node.js server running on port 5001
-
 ## Setup Steps
 
-### 1. Create `.env` File
+### 1. Create `.env` file
 
 Create a `.env` file in the root directory with the following configuration:
 
 ```env
 # Server Configuration
-PORT=5001
+PORT=5000
 
 # SMTP Configuration
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
+SMTP_SECURE=false
 
-# Email Configuration
-FROM_NAME=StormBuddi
-TO_EMAIL=info@stormbuddi.com
+# SMTP Authentication
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+
+# Email Settings
+SMTP_FROM_NAME=StormBuddi
+SMTP_FROM_EMAIL=your-email@gmail.com
+SMTP_TO_EMAIL=info@stormbuddi.com
 ```
 
 ### 2. Gmail Setup (Recommended)
 
 If using Gmail:
 
-1. Enable 2-Step Verification on your Google account
-2. Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
-3. Generate a new App Password for "Mail"
-4. Use this App Password as `SMTP_PASSWORD` in your `.env` file
+1. **Enable 2-Step Verification:**
+   - Go to [Google Account Security](https://myaccount.google.com/security)
+   - Enable 2-Step Verification
 
-**Note:** Do NOT use your regular Gmail password. You must use an App Password.
+2. **Generate App Password:**
+   - Go to [App Passwords](https://myaccount.google.com/apppasswords)
+   - Select "Mail" and your device
+   - Copy the generated 16-character password
+   - Use this as `SMTP_PASS` (not your regular Gmail password)
+
+3. **Configuration:**
+   ```
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=xxxx xxxx xxxx xxxx  (16-character app password)
+   ```
 
 ### 3. Other Email Providers
 
-#### Outlook/Hotmail
-```env
+**Outlook/Hotmail:**
+```
 SMTP_HOST=smtp-mail.outlook.com
 SMTP_PORT=587
+SMTP_SECURE=false
 ```
 
-#### Yahoo
-```env
+**Yahoo:**
+```
 SMTP_HOST=smtp.mail.yahoo.com
 SMTP_PORT=587
+SMTP_SECURE=false
 ```
 
-#### Custom SMTP
-```env
-SMTP_HOST=your-smtp-server.com
-SMTP_PORT=587
-SMTP_USERNAME=your-username
-SMTP_PASSWORD=your-password
-```
+**Custom SMTP:**
+Use your email provider's SMTP settings. For port 465, set `SMTP_SECURE=true`.
 
 ### 4. Running the Application
 
-#### Option 1: Run Both Servers Separately
-
-Terminal 1 - Start Node.js server:
+**Option 1: Run server and React app separately**
 ```bash
+# Terminal 1 - Start the server
 npm run server
-```
 
-Terminal 2 - Start React app:
-```bash
+# Terminal 2 - Start React app
 npm start
 ```
 
-#### Option 2: Run Both Together
-
+**Option 2: Run both together**
 ```bash
 npm run dev
 ```
 
-This will start both the Node.js server (port 5001) and React app (port 3000) simultaneously.
-
 ### 5. Testing
 
-1. Navigate to the signup page
-2. Fill out the form
-3. Submit the form
-4. Check the email inbox specified in `TO_EMAIL`
+1. Start the server: `npm run server` (or `npm run dev`)
+2. Navigate to the signup page
+3. Fill out the form and submit
+4. Check the email inbox specified in `SMTP_TO_EMAIL`
+
+### 6. Health Check
+
+You can verify the server is running by visiting:
+```
+http://localhost:5000/health
+```
 
 ## Troubleshooting
 
-### "Email service not configured" Error
-- Ensure `.env` file exists in the root directory
-- Verify `SMTP_USERNAME` and `SMTP_PASSWORD` are set
+### "Email service is not configured" Error
+- Make sure all SMTP environment variables are set in `.env`
+- Verify `.env` file is in the root directory
+- Restart the server after changing `.env` file
 
-### "Failed to send email" Error
-- Check SMTP credentials are correct
-- For Gmail, ensure you're using an App Password, not your regular password
-- Verify SMTP host and port are correct for your email provider
-- Check firewall/network settings
+### "Authentication failed" Error
+- For Gmail: Make sure you're using an App Password, not your regular password
+- Verify your email and password are correct
+- Check if 2-Step Verification is enabled (for Gmail)
 
-### Connection Timeout
-- Verify SMTP host and port are correct
-- Check if your network/firewall blocks SMTP ports
-- Try using port 465 with `secure: true` in server.js
+### "Connection timeout" Error
+- Check your SMTP host and port settings
+- Verify your firewall isn't blocking the connection
+- Try different ports (587 for STARTTLS, 465 for SSL)
 
 ### CORS Errors
-- Ensure the proxy is configured correctly in `setupProxy.js`
-- Verify the Node.js server is running on port 5001
-
-## Security Notes
-
-- Never commit `.env` file to version control
-- Use environment variables in production
-- Consider using a dedicated email service (SendGrid, Mailgun) for production
-- Keep your App Passwords secure
+- The proxy is configured in `setupProxy.js`
+- Make sure the server is running on port 5000
+- Check that the proxy target matches your server URL
 
 ## Production Deployment
 
 For production:
 1. Set environment variables on your hosting platform
 2. Update the proxy target in `setupProxy.js` if needed
-3. Consider using a dedicated email service for better deliverability
-4. Enable HTTPS for secure connections
+3. Or configure your production server to handle `/api/signup` directly
+4. Use secure SMTP settings (port 465 with SSL/TLS)
 
