@@ -6,12 +6,72 @@ const Contact = () => {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [focusedField, setFocusedField] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    setSubmitMessage('');
+    setSubmitError('');
+
+    // Validate required fields
+    if (!formData.name || !formData.name.trim()) {
+      setSubmitError('Name is required');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.email || !formData.email.trim()) {
+      setSubmitError('Email is required');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitError('Please enter a valid email address');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.message || !formData.message.trim()) {
+      setSubmitError('Message is required');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/contact/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit form');
+      }
+
+      if (data.success) {
+        setSubmitMessage(data.message || 'Thank you for your message! We will get back to you soon.');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSubmitMessage(''), 5000);
+      } else {
+        setSubmitError(data.error || 'Failed to submit. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setSubmitError(error.message || 'Failed to submit. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -19,9 +79,11 @@ const Contact = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    if (submitMessage || submitError) {
+      setSubmitMessage('');
+      setSubmitError('');
+    }
   };
-
-  const [focusedField, setFocusedField] = useState(null);
 
   return (
     <section id="contact-us" className="contact-us-section py-10 bg-white">
@@ -215,12 +277,27 @@ const Contact = () => {
                     ></textarea>
                   </div>
 
+                  {/* Success/Error Messages */}
+                  {submitMessage && (
+                    <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                      {submitMessage}
+                    </div>
+                  )}
+                  {submitError && (
+                    <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                      {submitError}
+                    </div>
+                  )}
+
                   <div className="flex justify-center md:justify-start">
                     <button 
-                      type="submit" 
-                      className="w-full max-w-[240px] md:max-w-none text-center bg-gradient-to-br from-[#A83119] to-[#D1452A] text-white border-none py-4 px-9 rounded-full text-base font-bold cursor-pointer transition-all duration-300 shadow-[0_6px_20px_rgba(168,49,25,0.3)] tracking-wide relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(168,49,25,0.4)]"
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`w-full max-w-[240px] md:max-w-none text-center bg-gradient-to-br from-[#A83119] to-[#D1452A] text-white border-none py-4 px-9 rounded-full text-base font-bold cursor-pointer transition-all duration-300 shadow-[0_6px_20px_rgba(168,49,25,0.3)] tracking-wide relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(168,49,25,0.4)] ${
+                        isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
                     >
-                    SUBMIT
+                      {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
                     </button>
                   </div>
                 </form>
