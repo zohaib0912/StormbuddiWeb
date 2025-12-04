@@ -17,6 +17,7 @@ import BuiltForRoofersStrip from './components/BuiltForRoofersStrip';
 import RevealOnScroll from './components/RevealOnScroll';
 import PaymentSuccess from './components/PaymentSuccess';
 import PaymentCancel from './components/PaymentCancel';
+import Signup from './components/Signup';
 
 // Main Landing Page Component
 const LandingPage = ({ onStartChat }) => {
@@ -83,6 +84,10 @@ function App() {
           <Route 
             path="/payment-cancel" 
             element={<PaymentCancel />} 
+          />
+          <Route 
+            path="/signup" 
+            element={<Signup />} 
           />
         </Routes>
         <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
