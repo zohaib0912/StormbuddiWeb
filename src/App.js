@@ -19,6 +19,7 @@ import PaymentSuccess from './components/PaymentSuccess';
 import PaymentCancel from './components/PaymentCancel';
 import Signup from './components/Signup';
 import EventPopupModal from './components/EventPopupModal';
+import EstimateTeam from './components/EstimateTeam';
 
 // Main Landing Page Component
 const LandingPage = ({ onStartChat }) => {
@@ -67,8 +68,8 @@ function AppContent() {
 
   // Show event popup on page load, but NOT on signup page
   useEffect(() => {
-    // Don't show popup on signup page
-    if (location.pathname === '/signup') {
+    // Don't show popup on signup page or estimate-team page
+    if (location.pathname === '/signup' || location.pathname === '/estimate-team') {
       setIsEventPopupOpen(false);
       return;
     }
@@ -117,6 +118,10 @@ function AppContent() {
         <Route 
           path="/signup" 
           element={<Signup />} 
+        />
+        <Route 
+          path="/estimate-team" 
+          element={<EstimateTeam />} 
         />
       </Routes>
       <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
