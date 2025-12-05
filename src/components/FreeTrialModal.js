@@ -100,6 +100,8 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         ? `${process.env.REACT_APP_PRICING_API}/free-trial`
         : 'https://app.stormbuddi.com/api/pricing/free-trial';
 
+      console.log('Sending payload:', apiData); // Debug: verify plan_id is included
+
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
