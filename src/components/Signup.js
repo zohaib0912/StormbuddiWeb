@@ -239,7 +239,7 @@ const Signup = () => {
               <div className="w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
                 <div className="relative w-full max-w-lg">
                   <img
-                    src="/images/Event.jpeg"
+                    src="/images/Event.png"
                     alt="StormBuddi"
                     className="w-full h-auto rounded-2xl shadow-[0_20px_60px_rgba(4,45,67,0.15)] shadow-[0_10px_30px_rgba(0,0,0,0.3)] object-cover"
                     onError={(e) => {

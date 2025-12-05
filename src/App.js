@@ -18,6 +18,7 @@ import RevealOnScroll from './components/RevealOnScroll';
 import PaymentSuccess from './components/PaymentSuccess';
 import PaymentCancel from './components/PaymentCancel';
 import Signup from './components/Signup';
+import EventPopupModal from './components/EventPopupModal';
 
 // Main Landing Page Component
 const LandingPage = ({ onStartChat }) => {
@@ -58,10 +59,27 @@ const LandingPage = ({ onStartChat }) => {
 
 function AppContent() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isEventPopupOpen, setIsEventPopupOpen] = useState(false);
   const location = useLocation();
 
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
+
+  // Show event popup on page load, but NOT on signup page
+  useEffect(() => {
+    // Don't show popup on signup page
+    if (location.pathname === '/signup') {
+      setIsEventPopupOpen(false);
+      return;
+    }
+
+    // Small delay to ensure page is loaded
+    const timer = setTimeout(() => {
+      setIsEventPopupOpen(true);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -102,6 +120,10 @@ function AppContent() {
         />
       </Routes>
       <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
+      <EventPopupModal 
+        isOpen={isEventPopupOpen} 
+        onClose={() => setIsEventPopupOpen(false)} 
+      />
     </div>
   );
 }

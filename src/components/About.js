@@ -13,7 +13,7 @@ const About = () => {
               {/* Left Side: Illustration */}
               <div className="w-full md:w-1/2 flex-shrink-0 min-h-[500px] flex items-center justify-center">
                 <img
-                  src="/images/Event.jpeg"
+                  src="/images/storm.jpg"
                   alt="CRM Illustration - Storm scene with character on roof"
                   className="w-full h-auto max-w-[600px] object-contain"
                   onError={(e) => {
