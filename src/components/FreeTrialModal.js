@@ -92,6 +92,7 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         password: formData.password,
+        plan_id: 1,
       };
 
       // Use the same endpoint pattern as Pricing component
