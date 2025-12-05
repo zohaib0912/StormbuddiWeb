@@ -20,6 +20,7 @@ import PaymentCancel from './components/PaymentCancel';
 import Signup from './components/Signup';
 import EventPopupModal from './components/EventPopupModal';
 import EstimateTeam from './components/EstimateTeam';
+import EstimateTeamPreview from './components/EstimateTeamPreview';
 
 // Main Landing Page Component
 const LandingPage = ({ onStartChat }) => {
@@ -34,6 +35,7 @@ const LandingPage = ({ onStartChat }) => {
       </RevealOnScroll>
     
       <Features />
+      <EstimateTeamPreview />
       <RevealOnScroll triggerOnce={false}>
         <Pricing />
       </RevealOnScroll>
