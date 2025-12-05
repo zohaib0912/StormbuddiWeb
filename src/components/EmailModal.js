@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const API_BASE = 'https://app.stormbuddi.com/api';
 const CHECK_EMAIL_ENDPOINT = `${API_BASE}/pricing/check-email`;
@@ -15,6 +15,105 @@ export default function EmailModal({
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const scrollPositionRef = useRef(null);
+  const originalStylesRef = useRef(null);
+
+  // Lock scrolling when modal opens, restore when it closes
+  useEffect(() => {
+    if (!isOpen) {
+      // Modal is closing - restore scroll position
+      if (scrollPositionRef.current !== null && originalStylesRef.current) {
+        const savedPos = scrollPositionRef.current;
+        const savedStyles = originalStylesRef.current;
+
+        // Temporarily disable smooth scrolling on html element
+        const html = document.documentElement;
+        const originalScrollBehavior = html.style.scrollBehavior || '';
+        html.style.scrollBehavior = 'auto';
+
+        // First, remove fixed positioning but keep overflow hidden temporarily
+        document.body.style.position = savedStyles.position || '';
+        document.body.style.top = savedStyles.top || '';
+        document.body.style.left = savedStyles.left || '';
+        document.body.style.right = savedStyles.right || '';
+        document.body.style.width = savedStyles.width || '';
+        
+        // Now set scroll position immediately (before browser repaints)
+        window.scrollTo(0, savedPos);
+        document.documentElement.scrollTop = savedPos;
+        document.body.scrollTop = savedPos;
+        
+        // Then restore overflow and padding
+        document.body.style.overflow = savedStyles.overflow || '';
+        document.body.style.paddingRight = savedStyles.paddingRight || '';
+        
+        // Restore smooth scroll behavior after position is set
+        requestAnimationFrame(() => {
+          html.style.scrollBehavior = originalScrollBehavior;
+        });
+
+        // Clear refs
+        scrollPositionRef.current = null;
+        originalStylesRef.current = null;
+      }
+      return;
+    }
+
+    // Modal is opening - lock scroll
+    // Store the current scroll position BEFORE making any changes
+    scrollPositionRef.current = window.pageYOffset || document.documentElement.scrollTop || 0;
+    
+    // Calculate scrollbar width to prevent layout shift
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    
+    // Store all original body styles
+    originalStylesRef.current = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      paddingRight: document.body.style.paddingRight,
+    };
+
+    // Apply scroll lock
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPositionRef.current}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    // Cleanup: restore scroll when component unmounts
+    return () => {
+      if (scrollPositionRef.current !== null && originalStylesRef.current) {
+        const savedPos = scrollPositionRef.current;
+        const savedStyles = originalStylesRef.current;
+
+        document.body.style.overflow = savedStyles.overflow || '';
+        document.body.style.position = savedStyles.position || '';
+        document.body.style.top = savedStyles.top || '';
+        document.body.style.left = savedStyles.left || '';
+        document.body.style.right = savedStyles.right || '';
+        document.body.style.width = savedStyles.width || '';
+        document.body.style.paddingRight = savedStyles.paddingRight || '';
+
+        const html = document.documentElement;
+        const originalScrollBehavior = html.style.scrollBehavior || '';
+        html.style.scrollBehavior = 'auto';
+        window.scrollTo(0, savedPos);
+        document.documentElement.scrollTop = savedPos;
+        
+        requestAnimationFrame(() => {
+          html.style.scrollBehavior = originalScrollBehavior;
+        });
+      }
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

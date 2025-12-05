@@ -71,8 +71,8 @@ const Signup = () => {
 
       if (data.success) {
         setSubmitMessage(data.message || 'Thank you for signing up! We will get back to you soon.');
-        setFormData({ name: '', email: '', contactNumber: '', address: '', message: '' });
-        setTimeout(() => setSubmitMessage(''), 5000);
+      setFormData({ name: '', email: '', contactNumber: '', address: '', message: '' });
+      setTimeout(() => setSubmitMessage(''), 5000);
       } else {
         setSubmitError(data.error || 'Failed to submit. Please try again later.');
       }
