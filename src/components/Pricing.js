@@ -24,18 +24,28 @@ const normalizePlans = (plans = []) => {
 
   const monthlyPlans = plans
     .filter((plan) => plan.billing_cycle === 'monthly')
-    .map((plan) => ({
-      id: String(plan.slug || plan.id || normalizePlanName(plan.name)),
-      dbId: plan.id, // Preserve database ID for checkout
-      name: plan.name,
-      displayName: plan.name,
-      price: Number(plan.price) || 0,
-      billingSuffix: '/Month',
-      features: plan.services && plan.services.length ? plan.services : [],
-      checkmarkColor: '#0E7490',
-      badgeText: null,
-      popular: /professional/i.test(plan.name)
-    }));
+    .map((plan) => {
+      const finalPrice = Number(plan.price) || 0;
+      const discPrice = plan.disc_price ? Number(plan.disc_price) : 0;
+      const originalPrice = discPrice > 0 ? finalPrice + discPrice : finalPrice;
+      const normalizedName = normalizePlanName(plan.name);
+      const isEnterprise = /enterprise/i.test(plan.name);
+      
+      return {
+        id: String(plan.slug || plan.id || normalizePlanName(plan.name)),
+        dbId: plan.id, // Preserve database ID for checkout
+        name: plan.name,
+        displayName: plan.name,
+        price: finalPrice, // Final price after discount
+        originalPrice: discPrice > 0 ? originalPrice : null, // Original price before discount
+        billingSuffix: '/Month',
+        features: plan.services && plan.services.length ? plan.services : [],
+        checkmarkColor: '#0E7490',
+        badgeText: null,
+        popular: /professional/i.test(plan.name),
+        validUntil: isEnterprise ? '7th January 2026' : null
+      };
+    });
 
   const monthlyLookup = new Map(
     monthlyPlans.map((plan) => [normalizePlanName(plan.name), plan])
@@ -46,12 +56,14 @@ const normalizePlans = (plans = []) => {
     .map((plan) => {
       const normalizedName = normalizePlanName(plan.name);
       const matchingMonthly = monthlyLookup.get(normalizedName);
-      const price = Number(plan.price) || 0;
+      const finalPrice = Number(plan.price) || 0;
+      const discPrice = plan.disc_price ? Number(plan.disc_price) : 0;
+      const originalPrice = discPrice > 0 ? finalPrice + discPrice : finalPrice;
       let badgeText = null;
 
       if (matchingMonthly && matchingMonthly.price > 0) {
         const monthlyAnnualCost = matchingMonthly.price * 12;
-        const discount = ((monthlyAnnualCost - price) / monthlyAnnualCost) * 100;
+        const discount = ((monthlyAnnualCost - finalPrice) / monthlyAnnualCost) * 100;
         if (discount > 0) {
           badgeText = `Save ${discount.toFixed(1)}%`;
         }
@@ -62,7 +74,8 @@ const normalizePlans = (plans = []) => {
         dbId: plan.id, // Preserve database ID for checkout
         name: plan.name,
         displayName: plan.name,
-        price,
+        price: finalPrice, // Final price after discount
+        originalPrice: discPrice > 0 ? originalPrice : null, // Original price before discount
         billingSuffix: '/Year',
         features:
           plan.services && plan.services.length
@@ -236,7 +249,8 @@ const Pricing = () => {
         displayName: plan.name,
         price: plan.monthlyPrice,
         billingSuffix: '/Month',
-        badgeText: null
+        badgeText: null,
+        validUntil: plan.id === 'enterprise' ? '7th January 2026' : null
       })),
     [basePlans]
   );
@@ -372,10 +386,26 @@ const Pricing = () => {
 
               {/* Price */}
               <div className="mb-6">
-                <div className="flex items-center justify-center gap-1 mt-2">
-                  <div className="text-[#A83119] text-[38px] font-bold leading-none">
-                    ${plan.price.toFixed(2)}
-                  </div>
+                <div className="flex items-center justify-center gap-0.5 mt-2">
+                  {plan.originalPrice ? (
+                    <>
+                      {/* Price container with original and final */}
+                      <div className="flex items-start gap-0.5">
+                        {/* Original price with strikethrough */}
+                        <div className="text-gray-400 text-[20px] font-bold leading-none line-through">
+                          ${plan.originalPrice.toFixed(2)}
+                        </div>
+                        {/* Final price after discount */}
+                        <div className="text-[#A83119] text-[38px] font-bold leading-none">
+                          ${plan.price.toFixed(2)}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-[#A83119] text-[38px] font-bold leading-none">
+                      ${plan.price.toFixed(2)}
+                    </div>
+                  )}
                   <div className="text-[#0F172A] text-lg font-semibold">
                     {plan.billingSuffix}
                   </div>
@@ -385,6 +415,11 @@ const Pricing = () => {
                     </span>
                   )}
                 </div>
+                {plan.validUntil && (
+                  <div className="mt-2 text-sm text-[#A83119] font-semibold">
+                    Valid until {plan.validUntil}
+                  </div>
+                )}
               </div>
 
               {/* Features */}
