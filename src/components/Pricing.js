@@ -59,6 +59,7 @@ const normalizePlans = (plans = []) => {
       const finalPrice = Number(plan.price) || 0;
       const discPrice = plan.disc_price ? Number(plan.disc_price) : 0;
       const originalPrice = discPrice > 0 ? finalPrice + discPrice : finalPrice;
+      const isEnterprise = /enterprise/i.test(plan.name);
       let badgeText = null;
 
       if (matchingMonthly && matchingMonthly.price > 0) {
@@ -83,7 +84,8 @@ const normalizePlans = (plans = []) => {
             : matchingMonthly?.features || [],
         checkmarkColor: '#0E7490',
         badgeText,
-        popular: /professional/i.test(plan.name)
+        popular: /professional/i.test(plan.name),
+        validUntil: isEnterprise ? '7th January 2026' : null
       };
     });
 
@@ -266,7 +268,8 @@ const Pricing = () => {
           displayName: plan.annualLabel || `${plan.name} Plan`,
           price: annualPrice,
           billingSuffix: '/Year',
-          badgeText: 'Save 8.33%'
+          badgeText: 'Save 8.33%',
+          validUntil: plan.id === 'enterprise' ? '7th January 2026' : null
         };
       }),
     [basePlans]
