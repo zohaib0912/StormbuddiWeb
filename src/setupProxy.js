@@ -50,6 +50,23 @@ module.exports = function setupProxy(app) {
     );
 
     app.use(
+      '/api/demo',
+      createProxyMiddleware({
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        logLevel: 'debug',
+        onProxyReq: (proxyReq, req, res) => {
+          proxyReq.setHeader('Accept', 'application/json');
+          proxyReq.setHeader('Content-Type', 'application/json');
+          console.log('Proxying demo request to:', proxyReq.path);
+        },
+        onError: (err, req, res) => {
+          console.error('Demo proxy error:', err);
+        },
+      })
+    );
+
+    app.use(
       '/api/contact',
       createProxyMiddleware({
         target: 'http://localhost:5000',

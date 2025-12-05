@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import EmailModal from './EmailModal';
+import DemoModal from './DemoModal';
 
 const getDefaultEndpoint = () => {
   if (process.env.REACT_APP_PRICING_API) {
@@ -84,6 +85,7 @@ const Pricing = () => {
   const [checkoutError, setCheckoutError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalPlan, setModalPlan] = useState(null);
+  const [isTalkModalOpen, setIsTalkModalOpen] = useState(false);
   const modalPlanId = useMemo(() => {
     if (!modalPlan?.dbId) return null;
     const parsedId =
@@ -272,6 +274,9 @@ const Pricing = () => {
     setIsModalOpen(true);
   };
 
+  const openTalkModal = () => setIsTalkModalOpen(true);
+  const closeTalkModal = () => setIsTalkModalOpen(false);
+
   return (
     <section id="pricing" className="pricing-section pb-16 bg-white">
       <div className="container mx-auto px-4">
@@ -432,6 +437,7 @@ const Pricing = () => {
             </span>
             <button 
               className="bg-transparent text-[#A83119] border-[3px] border-[#A83119] py-4 px-9 rounded-xl text-base font-bold cursor-pointer shadow-[0_4px_15px_rgba(168,49,25,0.1)] tracking-wider transition-all duration-300 hover:bg-[#A83119] hover:text-white hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(168,49,25,0.3)] relative overflow-hidden"
+              onClick={openTalkModal}
             >
               Talk To Sales
             </button>
@@ -446,6 +452,12 @@ const Pricing = () => {
         }}
         planId={modalPlanId}
         planName={modalPlan?.displayName || modalPlan?.name}
+      />
+
+      <DemoModal 
+        isOpen={isTalkModalOpen} 
+        onClose={closeTalkModal}
+        heading="Talk to sales"
       />
     </section>
   );

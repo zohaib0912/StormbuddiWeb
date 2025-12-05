@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import DemoModal from './DemoModal';
 
 const Hero = ({ onStartChat }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    source: '',
-    description: ''
-  });
 
   const slides = [
     {
@@ -63,33 +55,7 @@ const Hero = ({ onStartChat }) => {
   };
 
   const closeDemoModal = () => {
-    if (isSubmitting) return;
     setIsDemoModalOpen(false);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsDemoModalOpen(false);
-      setFormData({
-        name: '',
-        phone: '',
-        address: '',
-        source: '',
-        description: ''
-      });
-      setToastMessage('Confirmation received! Our team will contact you within 24 hours.');
-      setTimeout(() => setToastMessage(''), 4000);
-    }, 2000);
   };
 
   return (
@@ -100,7 +66,8 @@ const Hero = ({ onStartChat }) => {
         height: '760px',
         minHeight: '600px',
         position: 'relative',
-        background: 'transparent'
+        background: 'transparent',
+        zIndex: isDemoModalOpen ? 2000 : 'auto'
       }}
     >
       {/* Background Image */}
@@ -370,7 +337,7 @@ const Hero = ({ onStartChat }) => {
                   className="text-[#042D43] font-bold text-lg m-0"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
-                  Ask Professional
+                  Ask A Professional
                 </h4>
               </div>
               
@@ -411,132 +378,11 @@ const Hero = ({ onStartChat }) => {
         </div>
       </div>
 
-      {isDemoModalOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4">
-          <div className="relative w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl">
-            <button
-              type="button"
-              onClick={closeDemoModal}
-              className="absolute top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50"
-              aria-label="Close demo form"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-
-            <div className="mb-6">
-              <p className="text-sm uppercase tracking-[0.3em] text-[#A83119]">Book a demo</p>
-              <h3 className="mt-2 text-2xl font-semibold text-slate-900">Tell us about your roofing team</h3>
-              <p className="mt-1 text-sm text-slate-500">We’ll connect you with an advisor to tailor Storm Buddi to your workflows.</p>
-            </div>
-
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-                  Full Name
-                  <input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                    placeholder="Sarah Roofing"
-                  />
-                </label>
-                <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-                  Phone
-                  <input
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                    placeholder="(555) 123-4567"
-                  />
-                </label>
-              </div>
-
-              <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-                Address
-                <input
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                  placeholder="123 Main St, Dallas TX"
-                />
-              </label>
-
-              <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-                Lead Source
-                <select
-                  name="source"
-                  value={formData.source}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40 bg-white"
-                >
-                  <option value="" disabled>
-                    Select source
-                  </option>
-                  <option value="website">Website</option>
-                  <option value="referral">Referral</option>
-                  <option value="event">Tradeshow / Event</option>
-                  <option value="social">Social Media</option>
-                </select>
-              </label>
-
-              <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-                Project Details
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="4"
-                  required
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                  placeholder="Tell us about your roofing projects, crews, or storms you’re chasing."
-                />
-              </label>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-2xl bg-gradient-to-r from-[#A83119] to-[#C4452A] py-4 text-lg font-semibold text-white shadow-lg transition hover:shadow-xl disabled:opacity-70"
-              >
-                {isSubmitting ? 'Submitting…' : 'Submit'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {toastMessage && (
-        <div className="fixed inset-0 z-[2100] flex items-center justify-center px-4">
-          <div className="rounded-3xl border border-[#A83119]/30 bg-white px-8 py-6 text-center text-lg font-semibold text-[#042D43] shadow-2xl animate-[fadeInScale_0.3s_ease-out]">
-            <div className="mb-3 flex items-center justify-center text-3xl">✅</div>
-            {toastMessage}
-          </div>
-          <style>{`
-            @keyframes fadeInScale {
-              from { opacity: 0; transform: scale(0.9); }
-              to { opacity: 1; transform: scale(1); }
-            }
-          `}</style>
-        </div>
-      )}
+      <DemoModal 
+        isOpen={isDemoModalOpen} 
+        onClose={closeDemoModal}
+        heading="Book a demo"
+      />
 
       <style>{`
         @keyframes float {
