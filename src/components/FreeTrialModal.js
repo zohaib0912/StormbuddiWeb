@@ -110,10 +110,37 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         body: JSON.stringify(apiData),
       });
 
-      const data = await response.json();
+      // Try to parse JSON response, but handle cases where response might not be JSON
+      let data = {};
+      try {
+        const text = await response.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        // If JSON parsing fails, check status code
+        if (response.status === 409) {
+          throw new Error('Email already in use');
+        }
+        throw new Error('Failed to create free trial account. Please try again.');
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || 'Failed to create free trial account.');
+        // Check for email already exists error (409 Conflict or specific error messages)
+        const errorMessage = data.error || data.message || data.errors?.email?.[0] || '';
+        const lowerErrorMessage = errorMessage.toLowerCase();
+        
+        const isEmailExists = 
+          response.status === 409 || 
+          (lowerErrorMessage.includes('email') && 
+           (lowerErrorMessage.includes('already') || 
+            lowerErrorMessage.includes('exists') ||
+            lowerErrorMessage.includes('taken') ||
+            lowerErrorMessage.includes('duplicate')));
+        
+        if (isEmailExists) {
+          throw new Error('Email already in use');
+        }
+        
+        throw new Error(errorMessage || 'Failed to create free trial account.');
       }
 
       setSubmitSuccess('Free trial account created successfully!');
@@ -131,7 +158,17 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
       }, 2000);
     } catch (err) {
       console.error('Free trial signup error:', err);
-      setSubmitError(err.message || 'Failed to create free trial account. Please try again later.');
+      
+      // If error message is already user-friendly (like "Email already in use"), use it
+      if (err.message === 'Email already in use') {
+        setSubmitError(err.message);
+      } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        // CORS or network error - provide helpful message
+        setSubmitError('Network error. Please check your connection and try again.');
+      } else {
+        // Use the error message from the API or a generic fallback
+        setSubmitError(err.message || 'Failed to create free trial account. Please try again later.');
+      }
     } finally {
       setIsSubmitting(false);
     }
