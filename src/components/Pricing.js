@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import EmailModal from './EmailModal';
 import DemoModal from './DemoModal';
+import FreeTrialModal from './FreeTrialModal';
 
 const getDefaultEndpoint = () => {
   if (process.env.REACT_APP_PRICING_API) {
@@ -86,6 +87,7 @@ const Pricing = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalPlan, setModalPlan] = useState(null);
   const [isTalkModalOpen, setIsTalkModalOpen] = useState(false);
+  const [isFreeTrialModalOpen, setIsFreeTrialModalOpen] = useState(false);
   const modalPlanId = useMemo(() => {
     if (!modalPlan?.dbId) return null;
     const parsedId =
@@ -276,6 +278,8 @@ const Pricing = () => {
 
   const openTalkModal = () => setIsTalkModalOpen(true);
   const closeTalkModal = () => setIsTalkModalOpen(false);
+  const openFreeTrialModal = () => setIsFreeTrialModalOpen(true);
+  const closeFreeTrialModal = () => setIsFreeTrialModalOpen(false);
 
   return (
     <section id="pricing" className="pricing-section pb-16 bg-white">
@@ -428,6 +432,7 @@ const Pricing = () => {
         <div className="text-center mt-16">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button 
+              onClick={openFreeTrialModal}
               className="bg-gradient-to-br from-[#A83119] to-[#D1452A] text-white border-none py-4 px-9 rounded-xl text-base font-bold cursor-pointer shadow-[0_6px_20px_rgba(168,49,25,0.3)] tracking-wider transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(168,49,25,0.4)] relative overflow-hidden"
             >
               Start Free Trial
@@ -458,6 +463,11 @@ const Pricing = () => {
         isOpen={isTalkModalOpen} 
         onClose={closeTalkModal}
         heading="Talk to sales"
+      />
+
+      <FreeTrialModal 
+        isOpen={isFreeTrialModalOpen} 
+        onClose={closeFreeTrialModal}
       />
     </section>
   );

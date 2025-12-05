@@ -33,13 +33,22 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    const { name, phone, address, source, description } = body || {};
+    const { name, phone, address, source, description, email } = body || {};
 
     // Validate required fields
-    if (!name || !phone || !address || !source || !description) {
+    if (!name || !phone || !address || !source || !description || !email) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: name, phone, address, source, and description are required'
+        error: 'Missing required fields: name, phone, address, source, description, and email are required'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email format'
       });
     }
 
@@ -108,7 +117,7 @@ module.exports = async function handler(req, res) {
     // Customer confirmation
     const customerMailOptions = {
       from: `"${fromName}" <${fromEmail}>`,
-      to: body.email || '', // if provided later, but ensure empty handled
+      to: email,
       subject: 'Thank You for Requesting a Demo with StormBuddi',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -134,13 +143,11 @@ module.exports = async function handler(req, res) {
       `,
     };
 
-    // Send emails (customer email only if an email exists)
-    const promises = [transporter.sendMail(adminMailOptions)];
-    if (body.email) {
-      promises.push(transporter.sendMail(customerMailOptions));
-    }
-
-    await Promise.all(promises);
+    // Send both emails (email is now required)
+    await Promise.all([
+      transporter.sendMail(adminMailOptions),
+      transporter.sendMail(customerMailOptions)
+    ]);
 
     return res.status(200).json({
       success: true,

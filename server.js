@@ -165,10 +165,19 @@ app.post('/api/demo/send-email', async (req, res) => {
   try {
     const { name, phone, address, source, description, email } = req.body;
 
-    if (!name || !phone || !address || !source || !description) {
+    if (!name || !phone || !address || !source || !description || !email) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: name, phone, address, source, and description are required'
+        error: 'Missing required fields: name, phone, address, source, description, and email are required'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email format'
       });
     }
 
@@ -234,7 +243,7 @@ app.post('/api/demo/send-email', async (req, res) => {
 
     const customerMailOptions = {
       from: `"${fromName}" <${fromEmail}>`,
-      to: email || '',
+      to: email,
       subject: 'Thank You for Requesting a Demo with StormBuddi',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -260,12 +269,11 @@ app.post('/api/demo/send-email', async (req, res) => {
       `,
     };
 
-    const promises = [transporter.sendMail(adminMailOptions)];
-    if (email) {
-      promises.push(transporter.sendMail(customerMailOptions));
-    }
-
-    await Promise.all(promises);
+    // Send both emails (email is now required)
+    await Promise.all([
+      transporter.sendMail(adminMailOptions),
+      transporter.sendMail(customerMailOptions)
+    ]);
 
     return res.status(200).json({
       success: true,

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
+const FreeTrialModal = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    source: '',
-    description: '',
+    first_name: '',
+    last_name: '',
     email: '',
+    phone: '',
+    password: '',
+    confirm_password: '',
   });
 
-  // Lower header z-index when demo modal is open so it appears behind the overlay
+  // Lower header z-index when modal is open so it appears behind the overlay
   useEffect(() => {
     const header = document.getElementById('site-header');
     if (header) {
@@ -56,13 +56,13 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
     setSubmitSuccess('');
 
     // Basic validation
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.address.trim() || !formData.source.trim() || !formData.description.trim() || !formData.email.trim()) {
+    if (!formData.first_name.trim() || !formData.last_name.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.password.trim() || !formData.confirm_password.trim()) {
       setSubmitError('Please fill in all required fields.');
       setIsSubmitting(false);
       return;
     }
 
-    // Email validation (required)
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email.trim())) {
       setSubmitError('Please enter a valid email address.');
@@ -70,34 +70,65 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
       return;
     }
 
+    // Password validation
+    if (formData.password.length < 6) {
+      setSubmitError('Password must be at least 6 characters long.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Confirm password validation
+    if (formData.password !== formData.confirm_password) {
+      setSubmitError('Passwords do not match.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/demo/send-email', {
+      // Prepare data for API (exclude confirm_password)
+      const apiData = {
+        first_name: formData.first_name.trim(),
+        last_name: formData.last_name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        password: formData.password,
+      };
+
+      // Use the same endpoint pattern as Pricing component
+      const apiEndpoint = process.env.REACT_APP_PRICING_API 
+        ? `${process.env.REACT_APP_PRICING_API}/free-trial`
+        : 'https://app.stormbuddi.com/api/pricing/free-trial';
+
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiData),
       });
 
       const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit demo request.');
+        throw new Error(data.error || data.message || 'Failed to create free trial account.');
       }
 
-      setSubmitSuccess('Thank you! We received your demo request and will contact you within 24 hours.');
+      setSubmitSuccess('Free trial account created successfully!');
       setFormData({
-        name: '',
-        phone: '',
-        address: '',
-        source: '',
-        description: '',
+        first_name: '',
+        last_name: '',
         email: '',
+        phone: '',
+        password: '',
+        confirm_password: '',
       });
       setTimeout(() => {
         setSubmitSuccess('');
         onClose();
-      }, 1200);
+      }, 2000);
     } catch (err) {
-      console.error('Demo request error:', err);
-      setSubmitError(err.message || 'Failed to submit demo request. Please try again later.');
+      console.error('Free trial signup error:', err);
+      setSubmitError(err.message || 'Failed to create free trial account. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -112,7 +143,7 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
           type="button"
           onClick={closeModal}
           className="absolute top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50"
-          aria-label="Close demo form"
+          aria-label="Close free trial form"
         >
           <svg
             width="20"
@@ -130,80 +161,38 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
         </button>
 
         <div className="mb-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-[#A83119]">{heading}</p>
-          <h3 className="mt-2 text-2xl font-semibold text-slate-900">Tell us about your roofing team</h3>
-          <p className="mt-1 text-sm text-slate-500">We'll connect you with an advisor to tailor Storm Buddi to your workflows.</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-[#A83119]">Start Free Trial</p>
+          <h3 className="mt-2 text-2xl font-semibold text-slate-900">Create Your Account</h3>
+          <p className="mt-1 text-sm text-slate-500">Get started with StormBuddi today. No credit card required.</p>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="grid gap-4 md:grid-cols-2">
             <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-              Full Name
+              First Name
               <input
-                name="name"
-                value={formData.name}
+                name="first_name"
+                type="text"
+                value={formData.first_name}
                 onChange={handleInputChange}
                 required
                 className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                placeholder="Sarah Roofing"
+                placeholder="John"
               />
             </label>
             <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-              Phone
+              Last Name
               <input
-                name="phone"
-                value={formData.phone}
+                name="last_name"
+                type="text"
+                value={formData.last_name}
                 onChange={handleInputChange}
                 required
                 className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                placeholder="(555) 123-4567"
+                placeholder="Doe"
               />
             </label>
           </div>
-
-          <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-            Address
-            <input
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              required
-              className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-              placeholder="123 Main St, Dallas TX"
-            />
-          </label>
-
-          <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-            Lead Source
-            <select
-              name="source"
-              value={formData.source}
-              onChange={handleInputChange}
-              required
-              className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40 bg-white"
-            >
-              <option value="" disabled>
-                Select source
-              </option>
-              <option value="website">Website</option>
-              <option value="referral">Referral</option>
-              <option value="event">Tradeshow / Event</option>
-              <option value="social">Social Media</option>
-            </select>
-          </label>
-
-          <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
-            Project Details
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows="4"
-              required
-              className="rounded-2xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-              placeholder="Tell us about your roofing projects, crews, or storms you're chasing."
-            />
-          </label>
 
           <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
             Email
@@ -216,8 +205,50 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
               className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
               placeholder="you@example.com"
             />
-            <span className="text-xs font-normal text-slate-500">We'll send a confirmation to this email.</span>
           </label>
+
+          <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
+            Phone
+            <input
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleInputChange}
+              required
+              className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
+              placeholder="(555) 123-4567"
+            />
+          </label>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
+              Password
+              <input
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                minLength={6}
+                className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
+                placeholder="••••••••"
+              />
+              <span className="text-xs font-normal text-slate-500">Minimum 6 characters</span>
+            </label>
+            <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
+              Confirm Password
+              <input
+                name="confirm_password"
+                type="password"
+                value={formData.confirm_password}
+                onChange={handleInputChange}
+                required
+                minLength={6}
+                className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
+                placeholder="••••••••"
+              />
+            </label>
+          </div>
 
           {submitSuccess && (
             <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
@@ -233,9 +264,9 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-2xl bg-gradient-to-r from-[#A83119] to-[#C4452A] py-4 text-lg font-semibold text-white shadow-lg transition hover:shadow-xl disabled:opacity-70"
+            className="w-full rounded-2xl bg-gradient-to-r from-[#A83119] to-[#C4452A] py-4 text-lg font-semibold text-white shadow-lg transition hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Submitting…' : 'Submit'}
+            {isSubmitting ? 'Creating Account...' : 'Start Free Trial'}
           </button>
         </form>
       </div>
@@ -244,5 +275,5 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
   );
 };
 
-export default DemoModal;
+export default FreeTrialModal;
 
