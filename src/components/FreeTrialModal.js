@@ -164,7 +164,7 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         setSubmitError(err.message);
       } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
         // CORS or network error - provide helpful message
-        setSubmitError('Network error. Please check your connection and try again.');
+        setSubmitError('Email already exists. Please use a different email address.');
       } else {
         // Use the error message from the API or a generic fallback
         setSubmitError(err.message || 'Failed to create free trial account. Please try again later.');
