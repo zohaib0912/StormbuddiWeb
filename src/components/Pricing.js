@@ -29,7 +29,7 @@ const normalizePlans = (plans = []) => {
       const discPrice = plan.disc_price ? Number(plan.disc_price) : 0;
       const originalPrice = discPrice > 0 ? finalPrice + discPrice : finalPrice;
       const normalizedName = normalizePlanName(plan.name);
-      const isEnterprise = /enterprise/i.test(plan.name);
+      const isEnterprise = /Founder's Plan/i.test(plan.name);
       
       return {
         id: String(plan.slug || plan.id || normalizePlanName(plan.name)),
