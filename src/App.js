@@ -21,6 +21,8 @@ import Signup from './components/Signup';
 import EventPopupModal from './components/EventPopupModal';
 import EstimateTeam from './components/EstimateTeam';
 import EstimateTeamPreview from './components/EstimateTeamPreview';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import RefundReturns from './components/RefundReturns';
 
 // Main Landing Page Component
 const LandingPage = ({ onStartChat }) => {
@@ -124,6 +126,14 @@ function AppContent() {
         <Route 
           path="/estimate-team" 
           element={<EstimateTeam />} 
+        />
+        <Route 
+          path="/privacy-policy" 
+          element={<PrivacyPolicy />} 
+        />
+        <Route 
+          path="/refund-returns" 
+          element={<RefundReturns />} 
         />
       </Routes>
       <ChatWidget isOpen={isChatOpen} onClose={closeChat} />

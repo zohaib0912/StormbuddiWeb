@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import FreeTrialModal from './FreeTrialModal';
 
 const Footer = () => {
@@ -9,10 +10,10 @@ const Footer = () => {
   const closeFreeTrialModal = () => setIsFreeTrialModalOpen(false);
 
   const quickLinks = [
-    { name: 'Privacy Policy', href: 'documents/policy.html' },
-    { name: 'Refund & Returns', href: 'refund.html' },
-    { name: 'About Us', href: '#about-us' },
-    { name: 'Contact Us', href: '#contact-us' }
+    { name: 'Privacy Policy', href: '/privacy-policy', isRoute: true },
+    { name: 'Refund & Returns', href: '/refund-returns', isRoute: true },
+    { name: 'About Us', href: '#about-us', isRoute: false },
+    { name: 'Contact Us', href: '#contact-us', isRoute: false }
   ];
 
   return (
@@ -74,31 +75,49 @@ const Footer = () => {
                 </h2>
                 <div className="menu-quicklinks-container">
                   <ul className="menu list-none p-0 m-0">
-                    {quickLinks.map((link, index) => (
-                      <li key={index} className="menu-item mb-3">
-                        <a
-                          href={link.href}
-                          onMouseEnter={() => setHoveredLink(index)}
-                          onMouseLeave={() => setHoveredLink(null)}
-                          className={`text-white no-underline text-[15px] transition-all duration-300 flex items-center py-2.5 px-4 rounded-lg ${
-                            hoveredLink === index
-                              ? 'translate-x-2 scale-[1.02] shadow-[0_4px_15px_rgba(168,49,25,0.2)] border-[rgba(168,49,25,0.4)]'
-                              : ''
-                          }`}
-                          style={{
-                            background: hoveredLink === index
-                              ? 'linear-gradient(135deg, rgba(168, 49, 25, 0.3) 0%, rgba(209, 69, 42, 0.25) 100%)'
-                              : 'linear-gradient(135deg, rgba(168, 49, 25, 0.15) 0%, rgba(209, 69, 42, 0.1) 100%)',
-                            border: hoveredLink === index
-                              ? '1px solid rgba(168, 49, 25, 0.4)'
-                              : '1px solid rgba(168, 49, 25, 0.2)'
-                          }}
-                        >
-                          <span className="mr-2.5 text-[#A83119] font-bold text-base">→</span>
-                          {link.name}
-                        </a>
-                      </li>
-                    ))}
+                    {quickLinks.map((link, index) => {
+                      const linkClassName = `text-white no-underline text-[15px] transition-all duration-300 flex items-center py-2.5 px-4 rounded-lg ${
+                        hoveredLink === index
+                          ? 'translate-x-2 scale-[1.02] shadow-[0_4px_15px_rgba(168,49,25,0.2)] border-[rgba(168,49,25,0.4)]'
+                          : ''
+                      }`;
+                      const linkStyle = {
+                        background: hoveredLink === index
+                          ? 'linear-gradient(135deg, rgba(168, 49, 25, 0.3) 0%, rgba(209, 69, 42, 0.25) 100%)'
+                          : 'linear-gradient(135deg, rgba(168, 49, 25, 0.15) 0%, rgba(209, 69, 42, 0.1) 100%)',
+                        border: hoveredLink === index
+                          ? '1px solid rgba(168, 49, 25, 0.4)'
+                          : '1px solid rgba(168, 49, 25, 0.2)'
+                      };
+
+                      return (
+                        <li key={index} className="menu-item mb-3">
+                          {link.isRoute ? (
+                            <Link
+                              to={link.href}
+                              onMouseEnter={() => setHoveredLink(index)}
+                              onMouseLeave={() => setHoveredLink(null)}
+                              className={linkClassName}
+                              style={linkStyle}
+                            >
+                              <span className="mr-2.5 text-[#A83119] font-bold text-base">→</span>
+                              {link.name}
+                            </Link>
+                          ) : (
+                            <a
+                              href={link.href}
+                              onMouseEnter={() => setHoveredLink(index)}
+                              onMouseLeave={() => setHoveredLink(null)}
+                              className={linkClassName}
+                              style={linkStyle}
+                            >
+                              <span className="mr-2.5 text-[#A83119] font-bold text-base">→</span>
+                              {link.name}
+                            </a>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
