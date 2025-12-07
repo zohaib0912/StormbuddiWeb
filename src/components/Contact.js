@@ -140,7 +140,7 @@ const Contact = () => {
                         href="tel:+18009887435" 
                         className="text-[#4C6371] text-base leading-relaxed no-underline transition-colors duration-300 hover:text-[#A83119]"
                       >
-                        +1 800-988-7435
+                        +1 469 306 9209
                       </a>
                     </div>
                   </div>

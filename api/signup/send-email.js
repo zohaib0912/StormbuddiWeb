@@ -136,7 +136,7 @@ module.exports = async function handler(req, res) {
               Our team will review your information and you can expect a response within 24 hours.
             </p>
             <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0;">
-              If you have any questions, please feel free to call us at <a href="tel:+18009887435" style="color: #A83119; text-decoration: none;">+1 800-988-7435</a> or email us at <a href="mailto:info@stormbuddi.com" style="color: #A83119; text-decoration: none;">info@stormbuddi.com</a>.
+              If you have any questions, please feel free to call us at <a href="tel:+18009887435" style="color: #A83119; text-decoration: none;">+1 469 306 9209</a> or email us at <a href="mailto:info@stormbuddi.com" style="color: #A83119; text-decoration: none;">info@stormbuddi.com</a>.
             </p>
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
               <p style="margin: 0; color: #666; font-size: 14px;">Best regards,<br><strong>The StormBuddi Team</strong></p>
@@ -153,7 +153,7 @@ module.exports = async function handler(req, res) {
         
         Our team will review your information and you can expect a response within 24 hours.
         
-        If you have any questions, please feel free to call us at +1 800-988-7435 or email us at info@stormbuddi.com.
+        If you have any questions, please feel free to call us at +1 469 306 9209 or email us at info@stormbuddi.com.
         
         Best regards,
         The StormBuddi Team
