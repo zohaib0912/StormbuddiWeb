@@ -132,7 +132,7 @@ module.exports = async function handler(req, res) {
               Our team will review your message and you can expect a response within 24 hours.
             </p>
             <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0;">
-              If you need immediate assistance, please feel free to call us at <a href="tel:+18009887435" style="color: #A83119; text-decoration: none;">+1 469 306 9209</a>.
+              If you need immediate assistance, please feel free to call us at <a href="tel:+14693069209" style="color: #A83119; text-decoration: none;">+1 469 306 9209</a>.
             </p>
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
               <p style="margin: 0; color: #666; font-size: 14px;">Best regards,<br><strong>The StormBuddi Team</strong></p>

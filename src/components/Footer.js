@@ -164,7 +164,7 @@ const Footer = () => {
                         <div className="contact-info mb-4 space-y-2">
                           {/* Phone */}
                           <a 
-                            href="tel:+18009887435"
+                            href="tel:+14693069209"
                             className="flex items-center justify-start bg-[rgba(255,255,255,0.1)] py-1.5 px-3 rounded-md transition-all duration-300 hover:bg-[rgba(233,189,128,0.2)] no-underline"
                           >
                             <div className="bg-[#A83119] w-[25px] h-[25px] rounded-full flex items-center justify-center mr-2 shadow-[0_2px_6px_rgba(233,189,128,0.3)]">

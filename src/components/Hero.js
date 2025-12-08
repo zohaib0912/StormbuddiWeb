@@ -345,7 +345,7 @@ const Hero = ({ onStartChat }) => {
               <div className="space-y-3">
                 {/* Phone Option - Light pink/beige button */}
                 <button
-                  onClick={() => window.location.href = 'tel:+18009887435'}
+                  onClick={() => window.location.href = 'tel:+14693069209'}
                   className="w-full flex items-center gap-3 p-3 rounded-lg border border-[rgba(168,49,25,0.3)] bg-[#FFE5E5] hover:bg-[#FFD5D5] transition-colors duration-300 cursor-pointer"
                   style={{
                     backgroundColor: '#FFE5E5',

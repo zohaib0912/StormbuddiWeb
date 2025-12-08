@@ -127,7 +127,7 @@ module.exports = async function handler(req, res) {
           <div style="background: #f9f9f9; padding: 24px 20px; border-radius: 0 0 5px 5px;">
             <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 12px;">Hi ${name},</p>
             <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 12px;">We received your demo request and will contact you within 24 hours.</p>
-            <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 12px;">If you need immediate help, call us at <a href="tel:+18009887435" style="color: #A83119; text-decoration: none;">+1 469 306 9209</a>.</p>
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 12px;">If you need immediate help, call us at <a href="tel:+14693069209" style="color: #A83119; text-decoration: none;">+1 469 306 9209</a>.</p>
             <p style="font-size: 14px; color: #666; margin: 0;">— The StormBuddi Team</p>
           </div>
         </div>
