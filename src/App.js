@@ -18,7 +18,7 @@ import RevealOnScroll from './components/RevealOnScroll';
 import PaymentSuccess from './components/PaymentSuccess';
 import PaymentCancel from './components/PaymentCancel';
 import Signup from './components/Signup';
-import EventPopupModal from './components/EventPopupModal';
+// import EventPopupModal from './components/EventPopupModal'; // Temporarily disabled popup
 import EstimateTeam from './components/EstimateTeam';
 import EstimateTeamPreview from './components/EstimateTeamPreview';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -64,27 +64,27 @@ const LandingPage = ({ onStartChat }) => {
 
 function AppContent() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isEventPopupOpen, setIsEventPopupOpen] = useState(false);
+  // const [isEventPopupOpen, setIsEventPopupOpen] = useState(false); // Temporarily disabled popup
   const location = useLocation();
 
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
 
-  // Show event popup on page load, but NOT on signup page
-  useEffect(() => {
-    // Don't show popup on signup page or estimate-team page
-    if (location.pathname === '/signup' || location.pathname === '/estimate-team') {
-      setIsEventPopupOpen(false);
-      return;
-    }
-
-    // Small delay to ensure page is loaded
-    const timer = setTimeout(() => {
-      setIsEventPopupOpen(true);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
+  // // Show event popup on page load, but NOT on signup page (temporarily disabled)
+  // useEffect(() => {
+  //   // Don't show popup on signup page or estimate-team page
+  //   if (location.pathname === '/signup' || location.pathname === '/estimate-team') {
+  //     setIsEventPopupOpen(false);
+  //     return;
+  //   }
+  //
+  //   // Small delay to ensure page is loaded
+  //   const timer = setTimeout(() => {
+  //     setIsEventPopupOpen(true);
+  //   }, 500);
+  //   
+  //   return () => clearTimeout(timer);
+  // }, [location.pathname]);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -137,10 +137,10 @@ function AppContent() {
         />
       </Routes>
       <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
-      <EventPopupModal 
+      {/* <EventPopupModal 
         isOpen={isEventPopupOpen} 
         onClose={() => setIsEventPopupOpen(false)} 
-      />
+      /> */}
     </div>
   );
 }
