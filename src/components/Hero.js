@@ -230,10 +230,18 @@ const Hero = ({ onStartChat }) => {
 
                 {/* Description */}
                 <p 
-                  className="text-base md:text-lg text-[#4C6371] mb-8 leading-relaxed hero-mobile-desc"
+                  className="text-base md:text-lg text-[#4C6371] mb-4 leading-relaxed hero-mobile-desc"
                   style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '20px' }}
                 >
                   {currentSlideData.description}
+                </p>
+
+                {/* NRCA Membership Tagline */}
+                <p 
+                  className="text-sm md:text-base text-[#4C6371] font-bold mb-8 leading-relaxed hero-mobile-desc"
+                  style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '20px'}}
+                >
+                  Technology for Roofing Contractors, Backed by NRCA Membership
                 </p>
 
                 {/* CTA Button */}
