@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import NRCA from './components/NRCA';
 import About from './components/About';
 
 import Features from './components/Features';
@@ -33,6 +34,7 @@ const LandingPage = ({ onStartChat }) => {
         <Hero onStartChat={onStartChat} />
       </RevealOnScroll>
       <RevealOnScroll triggerOnce={false}>
+       
         <About />
       </RevealOnScroll>
     
@@ -50,6 +52,9 @@ const LandingPage = ({ onStartChat }) => {
       </RevealOnScroll>
       <RevealOnScroll triggerOnce={false}>
         <AboutCompany />
+      </RevealOnScroll>
+      <RevealOnScroll triggerOnce={false}>
+        <NRCA />
       </RevealOnScroll>
 
       <RevealOnScroll triggerOnce={false}>
