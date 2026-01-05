@@ -222,6 +222,7 @@ export default function EmailModal({
   return (
     <div
       onClick={handleBackdropClick}
+      className="email-modal-overlay"
       style={{
         position: 'fixed',
         top: 0,
@@ -233,15 +234,19 @@ export default function EmailModal({
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
+        overflowY: 'auto',
+        padding: '20px',
       }}
     >
-      <div style={{
+      <div 
+        className="email-modal-content"
+        style={{
         background: 'white',
         borderRadius: '12px',
         padding: '32px',
         width: '100%',
         maxWidth: '420px',
-        margin: '20px',
+        margin: 'auto',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
         position: 'relative',
       }}>
@@ -348,6 +353,68 @@ export default function EmailModal({
           You’ll be redirected to Stripe’s secure client checkout
         </p>
       </div>
+      <style>{`
+        /* Mobile-specific styles for EmailModal */
+        @media (max-width: 768px) {
+          .email-modal-overlay {
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto !important;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex !important;
+          }
+
+          .email-modal-content {
+            margin: auto !important;
+            max-width: calc(100% - 40px) !important;
+            padding: 24px !important;
+            position: relative !important;
+            flex-shrink: 0;
+            width: 100%;
+          }
+
+          /* Ensure overlay can scroll when content is taller than viewport */
+          .email-modal-overlay::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+          }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+          .email-modal-content {
+            padding: 20px !important;
+            max-width: calc(100% - 32px) !important;
+          }
+
+          .email-modal-overlay {
+            padding: 16px !important;
+          }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 360px) {
+          .email-modal-content {
+            padding: 16px !important;
+            max-width: calc(100% - 24px) !important;
+          }
+
+          .email-modal-overlay {
+            padding: 12px !important;
+          }
+        }
+
+        /* Handle landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+          .email-modal-overlay {
+            align-items: flex-start !important;
+            padding-top: 10px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
