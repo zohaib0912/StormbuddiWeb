@@ -17,6 +17,7 @@ export default function EmailModal({
   const [isLoading, setIsLoading] = useState(false);
   const scrollPositionRef = useRef(null);
   const originalStylesRef = useRef(null);
+  const modalContentRef = useRef(null);
 
   // Lock scrolling when modal opens, restore when it closes
   useEffect(() => {
@@ -127,19 +128,26 @@ export default function EmailModal({
   useEffect(() => {
     if (!isOpen || window.innerWidth > 768) return;
 
-    const overlay = document.querySelector('.email-modal-overlay');
-    const content = document.querySelector('.email-modal-content');
-
     const centerModal = () => {
+      const overlay = document.querySelector('.email-modal-overlay');
+      const content = modalContentRef.current || document.querySelector('.email-modal-content');
+      
       if (overlay && content) {
-        // Reset scroll position
-        overlay.scrollTop = 0;
+        // Method 1: Use scrollIntoView to center the modal (most reliable)
+        content.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest' 
+        });
         
-        // Calculate center position
+        // Method 2: Also calculate and set scroll position manually as backup
         requestAnimationFrame(() => {
           const overlayHeight = overlay.clientHeight;
+          const overlayScrollHeight = overlay.scrollHeight;
           const contentHeight = content.offsetHeight;
-          const scrollPosition = (overlayHeight - contentHeight) / 2;
+          
+          // Calculate center position
+          const scrollPosition = (overlayScrollHeight - overlayHeight) / 2;
           
           if (scrollPosition > 0) {
             overlay.scrollTop = scrollPosition;
@@ -148,24 +156,38 @@ export default function EmailModal({
       }
     };
 
-    // Center immediately and after a short delay to handle any layout shifts
-    centerModal();
-    const timeoutId = setTimeout(centerModal, 100);
+    // Center immediately when modal opens
+    // Use multiple timeouts to ensure it centers even with layout shifts
+    const timeout0 = setTimeout(centerModal, 0); // Immediate
+    const timeout1 = setTimeout(centerModal, 50);
+    const timeout2 = setTimeout(centerModal, 150);
+    const timeout3 = setTimeout(centerModal, 300);
 
     // Handle input focus to keep modal visible when keyboard appears
     const handleInputFocus = (e) => {
       setTimeout(() => {
+        const overlay = document.querySelector('.email-modal-overlay');
         const input = e.target;
         const modalContent = input.closest('.email-modal-content');
         if (modalContent && overlay) {
-          const inputRect = input.getBoundingClientRect();
-          const overlayRect = overlay.getBoundingClientRect();
-          const inputTop = inputRect.top - overlayRect.top;
-          const overlayHeight = overlayRect.height;
+          // Scroll the input into view, centered in viewport
+          input.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest' 
+          });
           
-          // Scroll to keep input visible in the middle third of the viewport
-          const targetScroll = inputTop - (overlayHeight / 3);
-          overlay.scrollTop = Math.max(0, targetScroll);
+          // Also manually adjust if needed
+          requestAnimationFrame(() => {
+            const inputRect = input.getBoundingClientRect();
+            const overlayRect = overlay.getBoundingClientRect();
+            const inputTop = inputRect.top - overlayRect.top;
+            const overlayHeight = overlayRect.height;
+            
+            // Scroll to keep input visible in the middle third of the viewport
+            const targetScroll = inputTop - (overlayHeight / 3);
+            overlay.scrollTop = Math.max(0, targetScroll);
+          });
         }
       }, 300); // Delay to allow keyboard to appear
     };
@@ -176,7 +198,10 @@ export default function EmailModal({
     }
 
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(timeout0);
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
       if (input) {
         input.removeEventListener('focus', handleInputFocus);
       }
@@ -309,6 +334,7 @@ export default function EmailModal({
     >
       <div 
         className="email-modal-content"
+        ref={modalContentRef}
         style={{
         background: 'white',
         borderRadius: '12px',
