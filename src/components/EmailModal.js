@@ -20,6 +20,8 @@ export default function EmailModal({
 
   // Lock scrolling when modal opens, restore when it closes
   useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    
     if (!isOpen) {
       // Modal is closing - restore scroll position
       if (scrollPositionRef.current !== null && originalStylesRef.current) {
@@ -77,15 +79,21 @@ export default function EmailModal({
       paddingRight: document.body.style.paddingRight,
     };
 
-    // Apply scroll lock
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollPositionRef.current}px`;
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    // On mobile, use a lighter scroll lock that allows modal to scroll
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+      // Don't use position: fixed on mobile as it interferes with modal scrolling
+    } else {
+      // Desktop: use full scroll lock
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPositionRef.current}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
     }
 
     // Cleanup: restore scroll when component unmounts
@@ -111,6 +119,66 @@ export default function EmailModal({
         requestAnimationFrame(() => {
           html.style.scrollBehavior = originalScrollBehavior;
         });
+      }
+    };
+  }, [isOpen]);
+
+  // Center modal on mobile when it opens
+  useEffect(() => {
+    if (!isOpen || window.innerWidth > 768) return;
+
+    const overlay = document.querySelector('.email-modal-overlay');
+    const content = document.querySelector('.email-modal-content');
+
+    const centerModal = () => {
+      if (overlay && content) {
+        // Reset scroll position
+        overlay.scrollTop = 0;
+        
+        // Calculate center position
+        requestAnimationFrame(() => {
+          const overlayHeight = overlay.clientHeight;
+          const contentHeight = content.offsetHeight;
+          const scrollPosition = (overlayHeight - contentHeight) / 2;
+          
+          if (scrollPosition > 0) {
+            overlay.scrollTop = scrollPosition;
+          }
+        });
+      }
+    };
+
+    // Center immediately and after a short delay to handle any layout shifts
+    centerModal();
+    const timeoutId = setTimeout(centerModal, 100);
+
+    // Handle input focus to keep modal visible when keyboard appears
+    const handleInputFocus = (e) => {
+      setTimeout(() => {
+        const input = e.target;
+        const modalContent = input.closest('.email-modal-content');
+        if (modalContent && overlay) {
+          const inputRect = input.getBoundingClientRect();
+          const overlayRect = overlay.getBoundingClientRect();
+          const inputTop = inputRect.top - overlayRect.top;
+          const overlayHeight = overlayRect.height;
+          
+          // Scroll to keep input visible in the middle third of the viewport
+          const targetScroll = inputTop - (overlayHeight / 3);
+          overlay.scrollTop = Math.max(0, targetScroll);
+        }
+      }, 300); // Delay to allow keyboard to appear
+    };
+
+    const input = document.querySelector('.email-input-field');
+    if (input) {
+      input.addEventListener('focus', handleInputFocus);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (input) {
+        input.removeEventListener('focus', handleInputFocus);
       }
     };
   }, [isOpen]);
@@ -236,6 +304,7 @@ export default function EmailModal({
         zIndex: 1000,
         overflowY: 'auto',
         padding: '20px',
+        WebkitOverflowScrolling: 'touch',
       }}
     >
       <div 
@@ -294,6 +363,7 @@ export default function EmailModal({
             </label>
             <input
               type="email"
+              className="email-input-field"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -360,11 +430,19 @@ export default function EmailModal({
             align-items: center !important;
             justify-content: center !important;
             padding: 20px !important;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch !important;
             overflow-y: auto !important;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
+            min-height: 100vh !important;
+            min-height: 100dvh !important;
+            min-height: -webkit-fill-available !important;
             display: flex !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
           }
 
           .email-modal-content {
@@ -372,8 +450,10 @@ export default function EmailModal({
             max-width: calc(100% - 40px) !important;
             padding: 24px !important;
             position: relative !important;
-            flex-shrink: 0;
-            width: 100%;
+            flex-shrink: 0 !important;
+            width: 100% !important;
+            transform: none !important;
+            align-self: center !important;
           }
 
           /* Ensure overlay can scroll when content is taller than viewport */
