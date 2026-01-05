@@ -166,29 +166,33 @@ const Header = () => {
                   </li>
                 </ul>
 
-                {/* Right: Learn More Button */}
+                {/* Right: NRCA Logo */}
                 <ul className="nav navbar-ul pull-right justify-content-end right-element-exist hidden md:flex items-center shrink-0 m-0 p-0 list-none">
                   <li>
-                    <a 
-                      href="#contact-us" 
-                      onClick={(e) => handleNavClick(e, '#contact-us')}
-                      className="cea-button-link cea-button inline-flex items-center gap-2 bg-[#A83119] text-white no-underline py-3 px-6 rounded text-[14px] font-semibold uppercase tracking-[0.5px] transition-all duration-300 border-none cursor-pointer whitespace-nowrap hover:bg-[#D1452A] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(168,49,25,0.4)]"
-                    >
-                      <span className="cea-button-text flex items-center gap-2">
-                        LEARN MORE 
-                        <svg 
-                          width="14" 
-                          height="14" 
-                          viewBox="0 0 16 16" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2"
-                          className="inline-block"
-                        >
-                          <path d="M5 11L11 5M11 5H5M11 5V11" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </span>
-                    </a>
+                    <div className="flex items-center">
+                      <a 
+                        href="https://www.nrca.net/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block transition-opacity duration-300 hover:opacity-80"
+                      >
+                        <img
+                          src="/images/NRCA.jpeg"
+                          alt="NRCA Logo"
+                          className="h-[70px] md:h-[80px] w-auto object-contain"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.parentElement) {
+                              e.target.parentElement.innerHTML = `
+                                <div class="h-[70px] md:h-[80px] w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                  <div class="text-3xl">🏆</div>
+                                </div>
+                              `;
+                            }
+                          }}
+                        />
+                      </a>
+                    </div>
                   </li>
                 </ul>
               </div>

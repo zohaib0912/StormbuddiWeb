@@ -53,9 +53,9 @@ const LandingPage = ({ onStartChat }) => {
       <RevealOnScroll triggerOnce={false}>
         <AboutCompany />
       </RevealOnScroll>
-      <RevealOnScroll triggerOnce={false}>
+      {/* <RevealOnScroll triggerOnce={false}>
         <NRCA />
-      </RevealOnScroll>
+      </RevealOnScroll> */}
 
       <RevealOnScroll triggerOnce={false}>
         <Contact />

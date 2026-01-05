@@ -223,57 +223,38 @@ const Footer = () => {
             </div>
           </div>
           
-        {/* Row 2: Additional Info */}
+        {/* Row 2: NRCA Membership */}
         <div className="row">
           <div className="w-full mb-3">
               <div className="widget widget_block mb-3">
-                <div className="widget-content text-center">
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-                    {/* Email Section */}
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="media-icon-part">
-                        <div className="footer-box-icon text-[#A83119] text-2xl">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="media-body">
-                        <div className="footer-content">
-                          <div className="mb-0">
-                            <a 
-                              href="mailto:info@stormbuddi.com" 
-                              className="text-white no-underline text-sm transition-colors duration-300 hover:text-[#E9BD80]"
-                            >
-                              Talk to an Experts Toll Free info@stormbuddi.com
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                <div className="widget-content">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6">
+                    {/* NRCA Logo - Left */}
+                    <div className="flex items-center justify-center">
+                      <img
+                        src="/images/LOGO2.png"
+                        alt="NRCA Logo"
+                        className="w-[80px] md:w-[100px] h-auto object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = `
+                            <div class="w-[80px] md:w-[100px] h-[60px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                              <div class="text-center text-[#4C6371] text-sm">
+                                <div class="text-2xl mb-1">🏆</div>
+                                <div class="text-xs">NRCA</div>
+                              </div>
+                            </div>
+                          `;
+                        }}
+                      />
                     </div>
 
-                    {/* Address Section */}
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="media-icon-part">
-                        <div className="footer-box-icon text-[#A83119] text-2xl">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="media-body">
-                        <div className="footer-content">
-                          <div className="mb-0">
-                            <a 
-                              href="https://maps.google.com/?q=2785+Rockbrook+Dr+Suite+104+Lewisville+Texas+United+States+of+America" 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-white no-underline text-sm transition-colors duration-300 hover:text-[#E9BD80]"
-                            >
-                              2785 Rockbrook Dr Suite 104 Lewisville, Texas, United States of America.
-                            </a>
-                          </div>
-                        </div>
+                    {/* NRCA Text - Right */}
+                    <div className="flex items-center justify-center">
+                      <div className="footer-content">
+                        <p className="text-white text-sm md:text-base m-0 text-center md:text-left">
+                          Proud Member of NRCA (National Roofing Contractors Association)
+                        </p>
                       </div>
                     </div>
                   </div>
