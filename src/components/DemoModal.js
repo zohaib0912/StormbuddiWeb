@@ -107,7 +107,7 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4">
-      <div className="relative w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl">
+      <div className="relative w-full max-w-xl rounded-3xl bg-white p-6 shadow-2xl">
         <button
           type="button"
           onClick={closeModal}

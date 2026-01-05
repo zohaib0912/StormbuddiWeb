@@ -420,7 +420,7 @@ const Hero = ({ onStartChat }) => {
 
         @media (max-width: 768px) {
           .beruco-slider-wrapper {
-            height: 580px !important;
+            height: auto !important;
             min-height: 580px !important;
           }
 
