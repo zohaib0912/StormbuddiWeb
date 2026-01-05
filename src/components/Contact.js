@@ -184,7 +184,9 @@ const Contact = () => {
                     
                     {/* Instagram */}
                     <a 
-                      href="#" 
+                      href="https://www.instagram.com/stormbuddi2025/" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-[55px] h-[55px] rounded-full flex items-center justify-center no-underline transition-all duration-300 shadow-[0_4px_15px_rgba(220,39,67,0.3)] border-2 border-white/80 hover:scale-110 hover:shadow-[0_6px_20px_rgba(220,39,67,0.4)]"
                     >
                       <div className="w-[55px] h-[55px] bg-gradient-to-br from-[#f09433] via-[#e6683c] via-[#dc2743] via-[#cc2366] to-[#bc1888] rounded-full flex items-center justify-center text-white text-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
