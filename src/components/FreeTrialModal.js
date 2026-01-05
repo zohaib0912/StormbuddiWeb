@@ -294,11 +294,11 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
                 value={formData.password}
                 onChange={handleInputChange}
                 required
-                minLength={6}
+                minLength={8}
                 className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
                 placeholder="••••••••"
               />
-              <span className="text-xs font-normal text-slate-500">Minimum 6 characters</span>
+              <span className="text-xs font-normal text-slate-500">Minimum 8 characters</span>
             </label>
             <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
               Confirm Password
@@ -308,7 +308,7 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
                 value={formData.confirm_password}
                 onChange={handleInputChange}
                 required
-                minLength={6}
+                minLength={8}
                 className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
                 placeholder="••••••••"
               />

@@ -177,7 +177,7 @@ const Header = () => {
                         className="inline-block transition-opacity duration-300 hover:opacity-80"
                       >
                         <img
-                          src="/images/NRCA.jpeg"
+                          src="/images/LOGO2.png"
                           alt="NRCA Logo"
                           className="h-[70px] md:h-[80px] w-auto object-contain"
                           onError={(e) => {
