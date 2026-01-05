@@ -15,8 +15,11 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
   });
 
   // Lower header z-index when modal is open so it appears behind the overlay
+  // Also lock body scroll on mobile
   useEffect(() => {
     const header = document.getElementById('site-header');
+    const isMobile = window.innerWidth <= 768;
+    
     if (header) {
       if (isOpen) {
         header.style.zIndex = '100';
@@ -26,11 +29,33 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         header.style.pointerEvents = '';
       }
     }
+
+    // Lock body scroll when modal is open (especially important on mobile)
+    if (isOpen) {
+      if (isMobile) {
+        // On mobile, just prevent body scroll
+        document.body.style.overflow = 'hidden';
+      } else {
+        // On desktop, use full scroll lock
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        if (scrollbarWidth > 0) {
+          document.body.style.paddingRight = `${scrollbarWidth}px`;
+        }
+      }
+    } else {
+      // Restore body scroll when modal closes
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
     return () => {
       if (header) {
         header.style.zIndex = '';
         header.style.pointerEvents = '';
       }
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen]);
 
@@ -177,12 +202,12 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4">
-      <div className="relative w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl">
+    <div className="freetrial-modal-overlay fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4 overflow-y-auto">
+      <div className="freetrial-modal-content relative w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl my-auto">
         <button
           type="button"
           onClick={closeModal}
-          className="absolute top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50"
+          className="absolute top-4 right-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white"
           aria-label="Close free trial form"
         >
           <svg
@@ -200,7 +225,7 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
           </svg>
         </button>
 
-        <div className="mb-6">
+        <div className="mb-6 pr-12">
           <p className="text-sm uppercase tracking-[0.3em] text-[#A83119]">Start Free Trial</p>
           <h3 className="mt-2 text-2xl font-semibold text-slate-900">Create Your Account</h3>
           <p className="mt-1 text-sm text-slate-500">Get started with StormBuddi today. No credit card required.</p>
@@ -310,6 +335,87 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
           </button>
         </form>
       </div>
+      <style>{`
+        /* Mobile-specific styles for FreeTrialModal */
+        @media (max-width: 768px) {
+          .freetrial-modal-overlay {
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            -webkit-overflow-scrolling: touch !important;
+            overflow-y: auto !important;
+            min-height: 100vh !important;
+            min-height: 100dvh !important;
+            min-height: -webkit-fill-available !important;
+            display: flex !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+
+          .freetrial-modal-content {
+            margin: auto !important;
+            max-width: calc(100% - 40px) !important;
+            padding: 24px !important;
+            position: relative !important;
+            flex-shrink: 0 !important;
+            width: 100% !important;
+            transform: none !important;
+            align-self: center !important;
+            min-height: auto !important;
+          }
+
+          /* Ensure overlay can scroll when content is taller than viewport */
+          .freetrial-modal-overlay::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+          }
+
+          /* Ensure close button stays visible and accessible */
+          .freetrial-modal-content button[aria-label="Close free trial form"] {
+            position: absolute !important;
+            top: 16px !important;
+            right: 16px !important;
+            z-index: 20 !important;
+          }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+          .freetrial-modal-content {
+            padding: 20px !important;
+            max-width: calc(100% - 32px) !important;
+          }
+
+          .freetrial-modal-overlay {
+            padding: 16px !important;
+          }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 360px) {
+          .freetrial-modal-content {
+            padding: 16px !important;
+            max-width: calc(100% - 24px) !important;
+          }
+
+          .freetrial-modal-overlay {
+            padding: 12px !important;
+          }
+        }
+
+        /* Handle landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+          .freetrial-modal-overlay {
+            align-items: flex-start !important;
+            padding-top: 10px !important;
+          }
+        }
+      `}</style>
     </div>,
     document.body
   );
