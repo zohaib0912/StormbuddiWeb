@@ -233,11 +233,7 @@ export default function EmailModal({
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        overflowY: 'auto',
-        WebkitOverflowScrolling: 'touch',
-        padding: '20px',
       }}
-      className="email-modal-overlay"
     >
       <div style={{
         background: 'white',
@@ -245,13 +241,10 @@ export default function EmailModal({
         padding: '32px',
         width: '100%',
         maxWidth: '420px',
-        margin: 'auto',
+        margin: '20px',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
         position: 'relative',
-      }}
-      className="email-modal-content"
-      onClick={(e) => e.stopPropagation()}
-      >
+      }}>
         <button
           onClick={onClose}
           disabled={isLoading}
@@ -352,42 +345,9 @@ export default function EmailModal({
           color: '#999',
           marginTop: '16px',
         }}>
-          You'll be redirected to Stripe's secure client checkout
+          You’ll be redirected to Stripe’s secure client checkout
         </p>
       </div>
-      <style>{`
-        @media (max-width: 768px) {
-          .email-modal-overlay {
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 20px 16px !important;
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
-          }
-          
-          .email-modal-content {
-            margin: auto !important;
-            margin-top: auto !important;
-            margin-bottom: auto !important;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 24px 20px !important;
-            position: relative !important;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .email-modal-overlay {
-            padding: 16px 12px !important;
-          }
-          
-          .email-modal-content {
-            padding: 20px 16px !important;
-            max-height: 85vh;
-            border-radius: 12px !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
