@@ -172,8 +172,11 @@ const Contact = () => {
                   <div className="flex gap-5 justify-center flex-wrap">
                     {/* Facebook */}
                     <a 
-                      href="#" 
+                      href="https://www.facebook.com" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-[55px] h-[55px] rounded-full flex items-center justify-center no-underline transition-all duration-300 shadow-[0_4px_15px_rgba(24,119,242,0.3)] border-2 border-white/80 hover:scale-110 hover:shadow-[0_6px_20px_rgba(24,119,242,0.4)]"
+                      aria-label="Visit our Facebook page"
                     >
                       <div className="w-[55px] h-[55px] bg-gradient-to-br from-[#1877F2] to-[#0D6EFD] rounded-full flex items-center justify-center text-white text-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -198,8 +201,11 @@ const Contact = () => {
                     
                     {/* Twitter/X */}
                     <a 
-                      href="#" 
+                      href="https://twitter.com" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-[55px] h-[55px] rounded-full flex items-center justify-center no-underline transition-all duration-300 shadow-[0_4px_15px_rgba(29,161,242,0.3)] border-2 border-white/80 hover:scale-110 hover:shadow-[0_6px_20px_rgba(29,161,242,0.4)]"
+                      aria-label="Visit our Twitter/X page"
                     >
                       <div className="w-[55px] h-[55px] bg-gradient-to-br from-[#1DA1F2] to-[#0EA5E9] rounded-full flex items-center justify-center text-white text-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -210,8 +216,11 @@ const Contact = () => {
                     
                     {/* WhatsApp */}
                     <a 
-                      href="#" 
+                      href="https://wa.me" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-[55px] h-[55px] rounded-full flex items-center justify-center no-underline transition-all duration-300 shadow-[0_4px_15px_rgba(37,211,102,0.3)] border-2 border-white/80 hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.4)]"
+                      aria-label="Contact us on WhatsApp"
                     >
                       <div className="w-[55px] h-[55px] bg-gradient-to-br from-[#25D366] to-[#16A34A] rounded-full flex items-center justify-center text-white text-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
