@@ -44,7 +44,7 @@ const RevealOnScroll = ({
     observer.observe(node);
 
     return () => observer.disconnect();
-  }, [threshold, rootMargin]);
+  }, [threshold, rootMargin, triggerOnce]);
 
   return (
     <div

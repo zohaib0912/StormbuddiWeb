@@ -294,7 +294,7 @@ const Hero = ({ onStartChat }) => {
                   {!imageError ? (
                     <img
                       src={`/images/${currentSlideData.imageRight}`}
-                      alt="Hero Image"
+                      alt="Hero"
                       className="w-full max-w-[456px] h-full object-contain"
                       style={{
                         width: '456px',

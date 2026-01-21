@@ -144,7 +144,6 @@ export default function EmailModal({
         requestAnimationFrame(() => {
           const overlayHeight = overlay.clientHeight;
           const overlayScrollHeight = overlay.scrollHeight;
-          const contentHeight = content.offsetHeight;
           
           // Calculate center position
           const scrollPosition = (overlayScrollHeight - overlayHeight) / 2;

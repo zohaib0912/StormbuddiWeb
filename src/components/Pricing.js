@@ -28,7 +28,6 @@ const normalizePlans = (plans = []) => {
       const finalPrice = Number(plan.price) || 0;
       const discPrice = plan.disc_price ? Number(plan.disc_price) : 0;
       const originalPrice = discPrice > 0 ? finalPrice + discPrice : finalPrice;
-      const normalizedName = normalizePlanName(plan.name);
       const isEnterprise = /Founder's Plan/i.test(plan.name);
       
       return {

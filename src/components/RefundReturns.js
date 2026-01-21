@@ -1,15 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 
 const RefundReturns = () => {
-  const navigate = useNavigate();
-
-  const handleBackToHome = () => {
-    navigate('/');
-  };
-
   return (
     <>
       <Header />
@@ -282,7 +275,7 @@ const RefundReturns = () => {
                           'The time it takes for the refund to appear in your account depends on your payment provider'
                         ].map((item, idx) => (
                           <div key={idx} className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-white rounded-lg">
-                            <svg width="18" height="18" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" className="flex-shrink-0 mt-0.5">
+                            <svg width="18" height="18" className="sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round"/>
                               <path d="M22 4L12 14.01l-3-3" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>

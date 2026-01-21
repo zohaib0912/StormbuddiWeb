@@ -4,12 +4,6 @@ import Header from './Header';
 import Footer from './Footer';
 
 const PrivacyPolicy = () => {
-  const navigate = useNavigate();
-
-  const handleBackToHome = () => {
-    navigate('/');
-  };
-
   return (
     <>
       <Header />
