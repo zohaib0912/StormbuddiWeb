@@ -168,7 +168,7 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         throw new Error(errorMessage || 'Failed to create free trial account.');
       }
 
-      setSubmitSuccess('Free trial account created successfully!');
+      setSubmitSuccess('Free trial account created successfully! Redirecting to login...');
       setFormData({
         first_name: '',
         last_name: '',
@@ -177,9 +177,9 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         password: '',
         confirm_password: '',
       });
+      // Redirect to login page after successful signup
       setTimeout(() => {
-        setSubmitSuccess('');
-        onClose();
+        window.location.href = 'https://app.stormbuddi.com/login';
       }, 2000);
     } catch (err) {
       console.error('Free trial signup error:', err);
