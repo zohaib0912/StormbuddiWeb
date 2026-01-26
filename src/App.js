@@ -8,7 +8,7 @@ import Features from './components/Features';
 
 import Pricing from './components/Pricing';
 import AboutCompany from './components/AboutCompany';
-
+import IREDiscountBanner from './components/IREDiscountBanner';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
@@ -36,6 +36,9 @@ const LandingPage = ({ onStartChat }) => {
        
         <About />
       </RevealOnScroll>
+      <RevealOnScroll triggerOnce={false}>
+        <IREDiscountBanner />
+      </RevealOnScroll>
     
       <Features />
       <EstimateTeamPreview />
@@ -55,6 +58,8 @@ const LandingPage = ({ onStartChat }) => {
       {/* <RevealOnScroll triggerOnce={false}>
         <NRCA />
       </RevealOnScroll> */}
+
+      
 
       <RevealOnScroll triggerOnce={false}>
         <Contact />
