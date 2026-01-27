@@ -28,17 +28,17 @@ import RefundReturns from './components/RefundReturns';
 const LandingPage = ({ onStartChat }) => {
   return (
     <>
+      <IREDiscountBanner />
       <Header />
       <RevealOnScroll triggerOnce={false}>
         <Hero onStartChat={onStartChat} />
       </RevealOnScroll>
+      
       <RevealOnScroll triggerOnce={false}>
        
         <About />
       </RevealOnScroll>
-      <RevealOnScroll triggerOnce={false}>
-        <IREDiscountBanner />
-      </RevealOnScroll>
+     
     
       <Features />
       <EstimateTeamPreview />

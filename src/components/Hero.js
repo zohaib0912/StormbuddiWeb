@@ -290,15 +290,17 @@ const Hero = ({ onStartChat }) => {
 
               {/* Right Column - Main Image */}
               <div className="w-full md:w-1/2 mb-5 md:mb-0 relative z-10 flex justify-end items-end md:pr-8 h-full pt-20 hero-mobile-hide">
-                <div className="relative inline-block flex-shrink-0 h-full flex items-end">
+                <div className="relative inline-block flex-shrink-0 h-full flex items-end" style={{ width: '100%', maxWidth: '456px' }}>
                   {!imageError ? (
                     <img
                       src={`/images/${currentSlideData.imageRight}`}
                       alt="Hero"
-                      className="w-full max-w-[456px] h-full object-contain"
+                      className="w-full max-w-[456px] h-full object-contain hero-image"
                       style={{
-                        width: '456px',
-                        height: '100%',
+                        maxWidth: '456px',
+                        width: '100%',
+                        height: 'auto',
+                        maxHeight: '100%',
                         objectFit: 'contain',
                         backgroundColor: 'transparent'
                       }}
@@ -406,15 +408,92 @@ const Hero = ({ onStartChat }) => {
           animation: float 3s ease-in-out infinite;
         }
 
+        /* Fix for tablet range 768px - 1240px */
+        @media (min-width: 768px) and (max-width: 1240px) {
+          .beruco-slider-wrapper {
+            height: 650px !important;
+            min-height: 650px !important;
+          }
+
+          .container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+
+          .hero-mobile-wrapper {
+            gap: 1.5rem !important;
+            align-items: center !important;
+            padding-top: 0 !important;
+          }
+
+          .hero-mobile-text {
+            width: 48% !important;
+            max-width: 48% !important;
+            padding-left: 0.5rem !important;
+            flex-shrink: 0 !important;
+            top: 50px;
+          }
+
+          .hero-mobile-text h1 {
+            font-size: clamp(32px, 4vw, 42px) !important;
+            line-height: 1.2 !important;
+            margin-bottom: 1rem !important;
+          }
+
+          .hero-mobile-text p {
+            font-size: clamp(14px, 1.8vw, 18px) !important;
+            margin-bottom: 0.75rem !important;
+            line-height: 1.5 !important;
+          }
+
+          .hero-mobile-cta button {
+            padding: 0.875rem 1.75rem !important;
+            font-size: 14px !important;
+          }
+
+          .hero-mobile-hide {
+            width: 48% !important;
+            max-width: 48% !important;
+            padding-right: 0.5rem !important;
+            padding-top: 0 !important;
+            flex-shrink: 0 !important;
+          }
+
+          .hero-mobile-hide > div {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: flex-end !important;
+            justify-content: center !important;
+            max-width: 100% !important;
+          }
+
+          .hero-mobile-hide img,
+          .hero-image {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            max-height: 550px !important;
+            object-fit: contain !important;
+          }
+
+          .sl-featurebox {
+            bottom: 20px !important;
+            max-width: 320px !important;
+          }
+        }
+
         @media (max-width: 1240px) {
           .beruco-slider-wrapper {
-            height: 550px !important;
+            height: 650px !important;
+            min-height: 650px !important;
           }
         }
 
         @media (max-width: 1024px) {
           .beruco-slider-wrapper {
-            height: 500px !important;
+            height: 600px !important;
+            min-height: 600px !important;
           }
         }
 

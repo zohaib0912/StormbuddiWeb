@@ -61,7 +61,8 @@ const Header = () => {
   return (
     <header 
       id="site-header" 
-      className="site-header header-absolute absolute top-0 left-0 right-0 z-[1000] w-full"
+      className="site-header header-absolute absolute left-0 right-0 z-[1000] w-full"
+      style={{ top: 'var(--announcement-bar-height, 60px)' }}
     >
       {/* Header Topbar */}
       <div className="header-topbar navbar elements-2 h-0 md:h-[6px] w-full bg-transparent"></div>
@@ -71,9 +72,10 @@ const Header = () => {
         <div
           className={`sticky-head transition-all duration-300 w-full ${
             isSticky
-              ? 'fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.08)] z-[999]'
+              ? 'fixed left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.08)] z-[999]'
               : 'bg-transparent'
           }`}
+          style={isSticky ? { top: 'var(--announcement-bar-height, 60px)' } : {}}
         >
           <div className="header-navbar navbar elements-3 bg-white md:bg-transparent">
             <div className="container-fluid max-w-full px-4 md:px-10 mx-auto">
