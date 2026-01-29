@@ -5,6 +5,8 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -61,6 +63,9 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
 
   const closeModal = () => {
     if (isSubmitting) return;
+    // Reset password visibility when closing
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     onClose();
   };
 
@@ -177,6 +182,8 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
         password: '',
         confirm_password: '',
       });
+      setShowPassword(false);
+      setShowConfirmPassword(false);
       // Redirect to login page after successful signup
       setTimeout(() => {
         window.location.href = 'https://app.stormbuddi.com/login';
@@ -288,30 +295,106 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
           <div className="grid gap-4 md:grid-cols-2">
             <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
               Password
-              <input
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                minLength={8}
-                className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                  minLength={8}
+                  className="rounded-xl border border-slate-200 px-4 py-3 pr-12 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40 w-full"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               <span className="text-xs font-normal text-slate-500">Minimum 8 characters</span>
             </label>
             <label className="flex flex-col text-sm font-semibold text-slate-700 gap-2">
               Confirm Password
-              <input
-                name="confirm_password"
-                type="password"
-                value={formData.confirm_password}
-                onChange={handleInputChange}
-                required
-                minLength={8}
-                className="rounded-xl border border-slate-200 px-4 py-3 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  name="confirm_password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirm_password}
+                  onChange={handleInputChange}
+                  required
+                  minLength={8}
+                  className="rounded-xl border border-slate-200 px-4 py-3 pr-12 text-base text-slate-900 outline-none focus:border-[#A83119] focus:ring-2 focus:ring-[#A83119]/40 w-full"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? (
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </label>
           </div>
 

@@ -50,12 +50,14 @@ const Header = () => {
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add('overflow-hidden', 'mobile-menu-open');
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('overflow-hidden', 'mobile-menu-open');
     }
 
-    return () => document.body.classList.remove('overflow-hidden');
+    return () => {
+      document.body.classList.remove('overflow-hidden', 'mobile-menu-open');
+    };
   }, [isMobileMenuOpen]);
 
   return (
@@ -79,9 +81,9 @@ const Header = () => {
         >
           <div className="header-navbar navbar elements-3 bg-white md:bg-transparent">
             <div className="container-fluid max-w-full px-4 md:px-10 mx-auto">
-              <div className="flex items-center justify-between min-h-[110px] md:min-h-[110px] relative">
-                {/* Mobile Menu Toggle */}
-                <div className="md:hidden flex items-center justify-start order-1 md:order-none">
+              <div className="flex items-center justify-between min-h-[110px] md:min-h-[110px] relative gap-2 md:gap-4">
+                {/* Mobile Menu Toggle - Far Left on Mobile */}
+                <div className="md:hidden flex items-center justify-start order-1 md:order-none flex-shrink-0">
                   <button
                     type="button"
                     aria-label="Open navigation menu"
@@ -105,15 +107,15 @@ const Header = () => {
                   </button>
                 </div>
 
-                {/* Left: Logo */}
-                <ul className="nav navbar-ul element-left right-element-exist flex items-center justify-center md:justify-start flex-1 md:flex-none md:shrink-0 m-0 p-0 list-none order-2 md:order-none">
+                {/* Center: Logo - Centered on Mobile */}
+                <ul className="nav navbar-ul element-left right-element-exist flex items-center justify-center md:justify-start flex-1 md:flex-none md:shrink-0 m-0 p-0 list-none order-2 md:order-none absolute md:relative left-1/2 md:left-auto -translate-x-1/2 md:translate-x-0">
                   <li className="header-titles-wrapper">
                     <div className="header-titles">
                       <a className="site-link" href="/">
                         <img
                           width="420"
                           height="110"
-                          className={`img-fluid site-logo max-h-[110px] md:max-h-[110px] h-auto w-auto object-contain ${isSticky ? 'hidden' : 'block'}`}
+                          className={`img-fluid site-logo max-h-[80px] md:max-h-[110px] h-auto w-auto object-contain ${isSticky ? 'hidden' : 'block'}`}
                           src="/images/logo.png"
                           alt="StormBuddi Logo"
                           onError={(e) => {
@@ -128,7 +130,7 @@ const Header = () => {
                         <img
                           width="420"
                           height="110"
-                          className={`img-fluid sticky-logo max-h-[110px] md:max-h-[110px] h-auto w-auto object-contain ${!isSticky ? 'hidden' : 'block'}`}
+                          className={`img-fluid sticky-logo max-h-[80px] md:max-h-[110px] h-auto w-auto object-contain ${!isSticky ? 'hidden' : 'block'}`}
                           src="/images/logo.png"
                           alt="StormBuddi Logo"
                           onError={(e) => {
@@ -143,10 +145,7 @@ const Header = () => {
                   </li>
                 </ul>
 
-                {/* Mobile Spacer */}
-                <div className="md:hidden order-3 w-11 md:order-none" />
-
-                {/* Center: Navigation */}
+                {/* Center: Navigation - Desktop Only */}
                 <ul className="nav navbar-ul pull-center justify-content-center right-element-exist hidden md:flex items-center flex-1 justify-center gap-8 list-none m-0 p-0">
                   <li className="header-navigation-wrapper">
                     <nav className="primary-menu-wrapper" aria-label="Horizontal">
@@ -168,10 +167,11 @@ const Header = () => {
                   </li>
                 </ul>
 
-                {/* Right: NRCA Logo */}
-                <ul className="nav navbar-ul pull-right justify-content-end right-element-exist hidden md:flex items-center shrink-0 m-0 p-0 list-none">
+                {/* Right: NRCA and WHOV Logos - Far Right on Mobile */}
+                <ul className="nav navbar-ul pull-right justify-content-end right-element-exist flex items-center shrink-0 m-0 p-0 list-none order-3 md:order-none">
                   <li>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2 md:gap-4">
+                      {/* NRCA Logo */}
                       <a 
                         href="https://www.nrca.net/" 
                         target="_blank" 
@@ -181,13 +181,36 @@ const Header = () => {
                         <img
                           src="/images/LOGO2.png"
                           alt="NRCA Logo"
-                          className="h-[70px] md:h-[80px] w-auto object-contain"
+                          className="h-[40px] md:h-[80px] w-auto object-contain"
                           onError={(e) => {
                             e.target.style.display = 'none';
                             if (e.target.parentElement) {
                               e.target.parentElement.innerHTML = `
-                                <div class="h-[70px] md:h-[80px] w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
-                                  <div class="text-3xl">🏆</div>
+                                <div class="h-[40px] md:h-[80px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                  <div class="text-xl md:text-3xl">🏆</div>
+                                </div>
+                              `;
+                            }
+                          }}
+                        />
+                      </a>
+                      {/* WHOV Logo */}
+                      <a 
+                        href="#" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block transition-opacity duration-300 hover:opacity-80"
+                      >
+                        <img
+                          src="/images/WHOV.png"
+                          alt="WHOV Logo"
+                          className="h-[40px] md:h-[80px] w-auto object-contain"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.parentElement) {
+                              e.target.parentElement.innerHTML = `
+                                <div class="h-[40px] md:h-[80px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                  <div class="text-xl md:text-3xl">🏅</div>
                                 </div>
                               `;
                             }
@@ -276,6 +299,57 @@ const Header = () => {
               </li>
             ))}
           </ul>
+          {/* Mobile: NRCA and WHOV Logos */}
+          <div className="mt-auto pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-center gap-4">
+              <a 
+                href="https://www.nrca.net/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block transition-opacity duration-300 hover:opacity-80"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <img
+                  src="/images/LOGO2.png"
+                  alt="NRCA Logo"
+                  className="h-[60px] w-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.parentElement) {
+                      e.target.parentElement.innerHTML = `
+                        <div class="h-[60px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                          <div class="text-2xl">🏆</div>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+              </a>
+              <a 
+                href="#" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block transition-opacity duration-300 hover:opacity-80"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <img
+                  src="/images/WHOV.png"
+                  alt="WHOV Logo"
+                  className="h-[60px] w-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.parentElement) {
+                      e.target.parentElement.innerHTML = `
+                        <div class="h-[60px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                          <div class="text-2xl">🏅</div>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </header>

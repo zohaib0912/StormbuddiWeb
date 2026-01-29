@@ -5,6 +5,7 @@ const IREDiscountBanner = () => {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const bannerRef = useRef(null);
+  const storedHeightRef = useRef(null);
 
   useEffect(() => {
     // Trigger animation on mount
@@ -41,10 +42,55 @@ const IREDiscountBanner = () => {
     setIsDemoModalOpen(false);
   };
 
+  // Hide banner when mobile menu is open
+  useEffect(() => {
+    const checkMobileMenu = () => {
+      if (bannerRef.current) {
+        if (document.body.classList.contains('mobile-menu-open')) {
+          // Store height before hiding (only if not already stored)
+          if (storedHeightRef.current === null) {
+            storedHeightRef.current = bannerRef.current.offsetHeight;
+          }
+          // Hide banner
+          bannerRef.current.style.display = 'none';
+          // Update height to 0 when hidden
+          document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+        } else {
+          // Show banner
+          bannerRef.current.style.display = '';
+          // Restore height when visible - use stored height or recalculate
+          setTimeout(() => {
+            if (bannerRef.current) {
+              const height = bannerRef.current.offsetHeight || storedHeightRef.current;
+              if (height) {
+                document.documentElement.style.setProperty('--announcement-bar-height', `${height}px`);
+              }
+            }
+            storedHeightRef.current = null;
+          }, 10); // Small delay to ensure display is restored before measuring
+        }
+      }
+    };
+
+    // Check initially
+    checkMobileMenu();
+
+    // Watch for changes to body class
+    const observer = new MutationObserver(checkMobileMenu);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <section 
       ref={bannerRef}
-      className="fixed top-0 left-0 right-0 z-[1100] bg-gradient-to-br from-[#042D43] via-[#0A3D5A] to-[#042D43] border-b-2 border-[#A83119]/40 shadow-lg"
+      className="fixed top-0 left-0 right-0 z-[1100] bg-gradient-to-br from-[#042D43] via-[#0A3D5A] to-[#042D43] border-b-2 border-[#A83119]/40 shadow-lg transition-opacity duration-300"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-20 overflow-hidden">
