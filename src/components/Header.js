@@ -195,11 +195,10 @@ const Header = () => {
                         />
                       </a>
                       {/* WHOV Logo */}
-                      <a 
-                        href="#" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-block transition-opacity duration-300 hover:opacity-80"
+                      <button 
+                        type="button"
+                        className="inline-block transition-opacity duration-300 hover:opacity-80 bg-transparent border-none p-0 cursor-pointer"
+                        aria-label="WHOV Logo"
                       >
                         <img
                           src="/images/WHOV.png"
@@ -216,7 +215,7 @@ const Header = () => {
                             }
                           }}
                         />
-                      </a>
+                      </button>
                     </div>
                   </li>
                 </ul>
@@ -325,12 +324,11 @@ const Header = () => {
                   }}
                 />
               </a>
-              <a 
-                href="#" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-block transition-opacity duration-300 hover:opacity-80"
+              <button 
+                type="button"
+                className="inline-block transition-opacity duration-300 hover:opacity-80 bg-transparent border-none p-0 cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="WHOV Logo"
               >
                 <img
                   src="/images/WHOV.png"
@@ -347,7 +345,7 @@ const Header = () => {
                     }
                   }}
                 />
-              </a>
+              </button>
             </div>
           </div>
         </div>
