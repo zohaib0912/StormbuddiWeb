@@ -60,11 +60,24 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
+  // Ensure CSS variable is set to 0 on estimate-team route
+  useEffect(() => {
+    if (location.pathname === '/estimate-team') {
+      document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+      document.body.style.paddingTop = '';
+    }
+  }, [location.pathname]);
+
+  // Calculate top position - use 0px on estimate-team route, otherwise use CSS variable
+  const headerTop = location.pathname === '/estimate-team' 
+    ? '0px' 
+    : 'var(--announcement-bar-height, 60px)';
+
   return (
     <header 
       id="site-header" 
       className="site-header header-absolute absolute left-0 right-0 z-[1000] w-full"
-      style={{ top: 'var(--announcement-bar-height, 60px)' }}
+      style={{ top: headerTop }}
     >
       {/* Header Topbar */}
       <div className="header-topbar navbar elements-2 h-0 md:h-[6px] w-full bg-transparent"></div>
@@ -77,7 +90,7 @@ const Header = () => {
               ? 'fixed left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.08)] z-[999]'
               : 'bg-transparent'
           }`}
-          style={isSticky ? { top: 'var(--announcement-bar-height, 60px)' } : {}}
+          style={isSticky ? { top: headerTop } : {}}
         >
           <div className="header-navbar navbar elements-3 bg-white md:bg-transparent">
             <div className="container-fluid max-w-full px-4 md:px-10 mx-auto">

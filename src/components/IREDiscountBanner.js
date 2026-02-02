@@ -1,19 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import DemoModal from './DemoModal';
 
 const IREDiscountBanner = () => {
+  const location = useLocation();
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const bannerRef = useRef(null);
   const storedHeightRef = useRef(null);
 
+  // Hide banner on estimate-team route
+  const shouldHide = location.pathname === '/estimate-team';
+
+  // Use useLayoutEffect to synchronously set spacing before browser paints
+  useLayoutEffect(() => {
+    if (shouldHide) {
+      // Immediately reset all spacing before paint
+      document.body.style.paddingTop = '';
+      document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+      setIsVisible(false);
+    } else {
+      // When navigating away from estimate-team, ensure we're ready to show banner
+      setIsVisible(true);
+    }
+  }, [shouldHide]);
+
   useEffect(() => {
+    // Don't show banner on estimate-team route
+    if (shouldHide) {
+      return;
+    }
+
     // Trigger animation on mount
     setIsVisible(true);
     
     // Calculate and set padding to body and CSS variable for header based on actual banner height
     const updateBannerHeight = () => {
-      if (bannerRef.current) {
+      if (bannerRef.current && !shouldHide) {
         const height = bannerRef.current.offsetHeight;
         document.body.style.paddingTop = `${height}px`;
         document.documentElement.style.setProperty('--announcement-bar-height', `${height}px`);
@@ -28,11 +51,14 @@ const IREDiscountBanner = () => {
     
     return () => {
       clearTimeout(timeoutId);
-      document.body.style.paddingTop = '';
-      document.documentElement.style.removeProperty('--announcement-bar-height');
+      // Only cleanup if we're not hiding (to avoid conflicts with the hide effect)
+      if (!shouldHide) {
+        document.body.style.paddingTop = '';
+        document.documentElement.style.removeProperty('--announcement-bar-height');
+      }
       window.removeEventListener('resize', updateBannerHeight);
     };
-  }, []);
+  }, [shouldHide]);
 
   const handleScheduleDemo = () => {
     setIsDemoModalOpen(true);
@@ -42,8 +68,13 @@ const IREDiscountBanner = () => {
     setIsDemoModalOpen(false);
   };
 
-  // Hide banner when mobile menu is open
+  // Hide banner when mobile menu is open (only if banner should be visible)
   useEffect(() => {
+    // Don't run this effect if banner is hidden
+    if (shouldHide) {
+      return;
+    }
+
     const checkMobileMenu = () => {
       if (bannerRef.current) {
         if (document.body.classList.contains('mobile-menu-open')) {
@@ -85,7 +116,12 @@ const IREDiscountBanner = () => {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [shouldHide]);
+
+  // Don't render banner on estimate-team route
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <section 
