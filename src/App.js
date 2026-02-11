@@ -5,7 +5,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 
 import Features from './components/Features';
-
+import ComparisonTable from './components/ComparisonTable';
 import Pricing from './components/Pricing';
 import AboutCompany from './components/AboutCompany';
 import IREDiscountBanner from './components/IREDiscountBanner';
@@ -42,6 +42,9 @@ const LandingPage = ({ onStartChat }) => {
     
       <Features />
       <EstimateTeamPreview />
+      <RevealOnScroll triggerOnce={false}>
+        <ComparisonTable />
+      </RevealOnScroll>
       <RevealOnScroll triggerOnce={false}>
         <Pricing />
       </RevealOnScroll>

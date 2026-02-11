@@ -417,11 +417,11 @@ const Pricing = () => {
                     </span>
                   )}
                 </div>
-                {plan.validUntil && (
+                {/* {plan.validUntil && (
                   <div className="mt-2 text-sm text-[#A83119] font-semibold">
                     Valid until {plan.validUntil}
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Features */}
