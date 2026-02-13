@@ -96,8 +96,9 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
     }
 
     try {
-      const response = await fetch('/api/demo/send-email', {
+      const response = await fetch('https://app.stormbuddi.com/api/stormbuddi-website/demo/submit', {
         method: 'POST',
+        mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });

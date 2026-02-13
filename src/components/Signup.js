@@ -55,8 +55,9 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('/api/signup/send-email', {
+      const response = await fetch('https://app.stormbuddi.com/api/stormbuddi-website/signup/submit', {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
         },
