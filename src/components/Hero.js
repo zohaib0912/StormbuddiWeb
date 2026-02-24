@@ -244,8 +244,8 @@ const Hero = ({ onStartChat }) => {
                   Technology for Roofing Contractors, Backed by NRCA Membership
                 </p>
 
-                {/* CTA Button */}
-                <div className="hero-mobile-cta">
+                {/* CTA Buttons - Book a Demo + Schedule a Meeting (visible on all screens including mobile) */}
+                <div className="hero-mobile-cta flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={openDemoModal}
@@ -269,6 +269,21 @@ const Hero = ({ onStartChat }) => {
                       />
                     </svg>
                   </button>
+                  <a
+                    href="https://calendly.com/clacy-tothpros/30min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-white text-[#A83119] border-2 border-[#A83119] rounded-lg px-[35px] py-[18px] text-[15px] font-semibold uppercase tracking-[1px] transition-all duration-300 ease-linear hover:bg-[#A83119] hover:text-white"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span>Schedule a Meeting</span>
+                  </a>
                 </div>
 
                 {/* Slider Dots */}
@@ -332,25 +347,7 @@ const Hero = ({ onStartChat }) => {
             }}
           >
             <div className=" p-6">
-              {/* Header with Icon */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-shrink-0">
-                  <div 
-                    className="w-[40px] h-[40px] bg-[#A83119] rounded-full flex items-center justify-center"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                      <path d="M3 18v-6a9 9 0 0 1 18 0v6M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-                    </svg>
-                  </div>
-                </div>
-                <h4 
-                  className="text-[#042D43] font-bold text-lg m-0"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
-                >
-                  Ask A Professional
-                </h4>
-              </div>
-              
+
               {/* Contact Options */}
               <div className="space-y-3">
                 {/* Phone Option - Light pink/beige button */}
@@ -451,6 +448,11 @@ const Hero = ({ onStartChat }) => {
             font-size: 14px !important;
           }
 
+          .hero-mobile-cta a {
+            padding: 0.875rem 1.75rem !important;
+            font-size: 14px !important;
+          }
+
           .hero-mobile-hide {
             width: 48% !important;
             max-width: 48% !important;
@@ -526,6 +528,17 @@ const Hero = ({ onStartChat }) => {
             width: 100%;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+          }
+
+          .hero-mobile-cta button,
+          .hero-mobile-cta a {
+            flex: 1 1 auto;
+            min-width: 140px;
+            justify-content: center;
+            padding: 0.875rem 1rem !important;
+            font-size: 13px !important;
           }
 
           .hero-mobile-dots {
