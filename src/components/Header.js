@@ -60,17 +60,20 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
-  // Ensure CSS variable is set to 0 on estimate-team route
+  // Ensure CSS variable is set to 0 on routes that don't show the IRE banner (same as estimate-team)
+  const noBannerRoutes = ['/estimate-team', '/privacy-policy', '/refund-returns'];
+  const shouldHideBannerSpace = noBannerRoutes.includes(location.pathname);
+
   useEffect(() => {
-    if (location.pathname === '/estimate-team') {
+    if (shouldHideBannerSpace) {
       document.documentElement.style.setProperty('--announcement-bar-height', '0px');
       document.body.style.paddingTop = '';
     }
-  }, [location.pathname]);
+  }, [location.pathname, shouldHideBannerSpace]);
 
-  // Calculate top position - use 0px on estimate-team route, otherwise use CSS variable
-  const headerTop = location.pathname === '/estimate-team' 
-    ? '0px' 
+  // Calculate top position - use 0px when no banner, otherwise use CSS variable
+  const headerTop = shouldHideBannerSpace
+    ? '0px'
     : 'var(--announcement-bar-height, 60px)';
 
   return (
