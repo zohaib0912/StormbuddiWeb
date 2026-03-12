@@ -8,7 +8,6 @@ import Features from './components/Features';
 import ComparisonTable from './components/ComparisonTable';
 import Pricing from './components/Pricing';
 import AboutCompany from './components/AboutCompany';
-import IREDiscountBanner from './components/IREDiscountBanner';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
@@ -28,7 +27,6 @@ import RefundReturns from './components/RefundReturns';
 const LandingPage = ({ onStartChat }) => {
   return (
     <>
-      <IREDiscountBanner />
       <Header />
       <RevealOnScroll triggerOnce={false}>
         <Hero onStartChat={onStartChat} />

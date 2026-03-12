@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -60,6 +61,25 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
+
+  // No IRE banner: header always at top on all pages; clear any leftover banner space
+  useEffect(() => {
+    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+    document.body.style.paddingTop = '';
+  }, []);
+
+  const headerTop = '0px';
+
+  const openDownloadModal = () => setIsDownloadModalOpen(true);
+  const closeDownloadModal = () => setIsDownloadModalOpen(false);
+  const handleConfirmDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/apk/app-release.apk';
+    link.download = 'StormBuddi-app.apk';
+    link.click();
+    closeDownloadModal();
+  };
+
   // Ensure CSS variable is set to 0 on routes that don't show the IRE banner (same as estimate-team)
   const noBannerRoutes = ['/estimate-team', '/privacy-policy', '/refund-returns'];
   const shouldHideBannerSpace = noBannerRoutes.includes(location.pathname);
@@ -72,9 +92,8 @@ const Header = () => {
   }, [location.pathname, shouldHideBannerSpace]);
 
   // Calculate top position - use 0px when no banner, otherwise use CSS variable
-  const headerTop = shouldHideBannerSpace
-    ? '0px'
-    : 'var(--announcement-bar-height, 60px)';
+
+
 
   return (
     <header 
@@ -178,6 +197,15 @@ const Header = () => {
                             </a>
                           </li>
                         ))}
+                        <li className="menu-item">
+                          <button
+                            type="button"
+                            onClick={openDownloadModal}
+                            className="text-[#042D43] no-underline text-[14px] font-semibold uppercase tracking-[0.5px] transition-colors duration-300 inline-block hover:text-[#A83119] bg-transparent border-none cursor-pointer p-0"
+                          >
+                            Download
+                          </button>
+                        </li>
                       </ul>
                     </nav>
                   </li>
@@ -313,6 +341,18 @@ const Header = () => {
                 </a>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  openDownloadModal();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="text-[#042D43] no-underline text-lg font-semibold uppercase tracking-[1px] inline-block bg-transparent border-none cursor-pointer p-0 text-left"
+              >
+                Download
+              </button>
+            </li>
           </ul>
           {/* Mobile: NRCA and WHOV Logos */}
           <div className="mt-auto pt-6 border-t border-gray-200">
@@ -366,6 +406,41 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      {/* Download app confirmation modal */}
+      {isDownloadModalOpen && (
+        <div className="fixed inset-0 z-[1300] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={closeDownloadModal}
+            aria-hidden="true"
+          />
+          <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full p-6 sm:p-8">
+            <h3 className="text-xl font-bold text-[#042D43] mb-3" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Download StormBuddi App
+            </h3>
+            <p className="text-[#4C6371] mb-6">
+              Are you sure you want to download the StormBuddi app?
+            </p>
+            <div className="flex flex-wrap gap-3 justify-end">
+              <button
+                type="button"
+                onClick={closeDownloadModal}
+                className="px-5 py-2.5 rounded-lg border-2 border-[#d9d9d9] text-[#042D43] font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDownload}
+                className="px-5 py-2.5 rounded-lg bg-[#A83119] text-white font-semibold hover:bg-[#C4452A] transition-colors"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
