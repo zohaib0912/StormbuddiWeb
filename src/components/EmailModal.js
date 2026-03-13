@@ -10,7 +10,11 @@ export default function EmailModal({
   onClose,
   planId,
   planName,
-  billingCycle = 'monthly'
+  billingCycle = 'monthly',
+  billingTotal = 0,
+  withReceptionist = false,
+  rachelAmount = 0,
+  planAmount = 0,
 }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -241,8 +245,13 @@ export default function EmailModal({
         },
         body: JSON.stringify({
           plan_id: planId,
+          base_plan_id: planId,
           email: trimmedEmail,
           billing_cycle: billingCycle,
+          plan_amount: planAmount,
+          with_receptionist: withReceptionist,
+          rachel_amount: rachelAmount,
+          total_amount: billingTotal,
         }),
       });
 
@@ -267,9 +276,14 @@ export default function EmailModal({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          plan_id: planId,
+          plan_id: planId,           // monthly ID for quarterly (2/3/8), annual ID for annual (5/6/9)
+          base_plan_id: planId,      // always the base plan ID — backend uses this for quarterly config lookup
           billing_cycle: billingCycle,
           email: trimmedEmail,
+          plan_amount: planAmount,
+          with_receptionist: withReceptionist,
+          rachel_amount: rachelAmount,
+          total_amount: billingTotal,
         }),
       });
 
@@ -329,6 +343,7 @@ export default function EmailModal({
         overflowY: 'auto',
         padding: '20px',
         WebkitOverflowScrolling: 'touch',
+        animation: 'emailOverlayIn 0.22s ease-out forwards',
       }}
     >
       <div 
@@ -343,6 +358,7 @@ export default function EmailModal({
         margin: 'auto',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
         position: 'relative',
+        animation: 'emailContentIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards',
       }}>
         <button
           onClick={onClose}
@@ -361,20 +377,46 @@ export default function EmailModal({
           ×
         </button>
 
-        <h2 style={{
-          margin: '0 0 8px 0',
-          fontSize: '24px',
-          color: '#1a1a1a',
-        }}>
-          Get started with {planName || 'Roofr'}
+        <h2 style={{ margin: '0 0 4px 0', fontSize: '22px', color: '#1a1a1a' }}>
+          Get started with {planName || 'Storm Buddi'}
         </h2>
-        <p style={{
-          margin: '0 0 24px 0',
-          color: '#666',
-          fontSize: '14px',
-        }}>
-          Enter your email to reserve this client plan
+        <p style={{ margin: '0 0 16px 0', color: '#666', fontSize: '14px' }}>
+          Enter your email to continue to Stripe checkout
         </p>
+
+        {/* Price summary */}
+        {billingTotal > 0 && (
+          <div style={{
+            background: '#F8FAFC',
+            border: '1px solid rgba(168,49,25,0.15)',
+            borderRadius: '10px',
+            padding: '12px 16px',
+            marginBottom: '20px',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: withReceptionist ? '6px' : '0', fontSize: '14px', color: '#4C6371' }}>
+              <span>{planName}</span>
+              <span style={{ fontWeight: '600', color: '#042D43' }}>
+                ${planAmount.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
+              </span>
+            </div>
+            {withReceptionist && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px', color: '#4C6371' }}>
+                <span>Rachel — AI Receptionist</span>
+                <span style={{ fontWeight: '600', color: '#042D43' }}>
+                  +${rachelAmount.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
+                </span>
+              </div>
+            )}
+            <div style={{ borderTop: '1px solid rgba(168,49,25,0.15)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '15px' }}>
+              <span style={{ fontWeight: '700', color: '#042D43' }}>
+                Total ({billingCycle})
+              </span>
+              <span style={{ fontWeight: '700', color: '#A83119', fontSize: '16px' }}>
+                ${billingTotal.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
+              </span>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '16px' }}>
@@ -518,6 +560,16 @@ export default function EmailModal({
             align-items: flex-start !important;
             padding-top: 10px !important;
           }
+        }
+
+        /* ── Entry animations ── */
+        @keyframes emailOverlayIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes emailContentIn {
+          from { opacity: 0; transform: translateY(28px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
         }
       `}</style>
     </div>

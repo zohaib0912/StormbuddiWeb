@@ -59,11 +59,18 @@ const ComparisonTable = () => {
       spotio: '✔️'
     },
     {
-      feature: 'AI Assistant/Automation',
-      stormBuddi: '✔️',
+      feature: 'AI Field Agents',
+      stormBuddi: '✔️ (Linda, Ava, Stan, Sonny)',
       salesRabbit: '❌',
       jobber: 'Limited',
       spotio: 'Limited'
+    },
+    {
+      feature: 'AI Receptionist (Call Answering)',
+      stormBuddi: '✔️ (Rachel, add-on)',
+      salesRabbit: '❌',
+      jobber: '❌',
+      spotio: '❌'
     },
     {
       feature: 'Integrations',
@@ -81,14 +88,14 @@ const ComparisonTable = () => {
     },
     {
       feature: 'Minimum Monthly Spend',
-      stormBuddi: '$75',
+      stormBuddi: '$165',
       salesRabbit: '$25+',
       jobber: '$49+',
       spotio: '$39+'
     },
     {
       feature: 'Pricing/User/Month',
-      stormBuddi: '$75–$90',
+      stormBuddi: '$165–$200',
       salesRabbit: '$25–$65',
       jobber: '$49–$249',
       spotio: '$39–$129'
@@ -140,7 +147,7 @@ const ComparisonTable = () => {
             Storm Buddi vs. The Competition
           </h2>
           <p className="text-[#4C6371] text-lg max-w-3xl mx-auto">
-            See why Storm Buddi is the only platform that combines full CRM, photo documentation, job management, storm tracking, supplement workflow, material ordering, and a homeowner portal—all in one solution.
+            See why Storm Buddi is the only platform that combines full CRM, photo documentation, job management, storm tracking, supplement workflow, material ordering, AI Field Agents, and a homeowner portal—all in one solution.
           </p>
         </div>
 

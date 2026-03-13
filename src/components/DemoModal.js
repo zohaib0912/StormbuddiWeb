@@ -132,7 +132,10 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="demo-modal-overlay fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4 overflow-y-auto">
+    <div
+      className="demo-modal-overlay fixed inset-0 z-[2000] flex items-center justify-center px-4 overflow-y-auto"
+      onClick={(e) => e.target === e.currentTarget && closeModal()}
+    >
       <div className="demo-modal-content relative w-full max-w-xl rounded-3xl bg-white p-6 shadow-2xl my-auto">
         <button
           type="button"
@@ -344,6 +347,23 @@ const DemoModal = ({ isOpen, onClose, heading = 'Book a demo' }) => {
             align-items: flex-start !important;
             padding-top: 10px !important;
           }
+        }
+
+        /* ── Entry animations ── */
+        @keyframes demoOverlayIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes demoContentIn {
+          from { opacity: 0; transform: translateY(28px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        .demo-modal-overlay {
+          animation: demoOverlayIn 0.22s ease-out forwards;
+          background: rgba(0, 0, 0, 0.6);
+        }
+        .demo-modal-content {
+          animation: demoContentIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
       `}</style>
     </div>,

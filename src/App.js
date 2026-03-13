@@ -20,6 +20,7 @@ import Signup from './components/Signup';
 // import EventPopupModal from './components/EventPopupModal'; // Temporarily disabled popup
 import EstimateTeam from './components/EstimateTeam';
 import EstimateTeamPreview from './components/EstimateTeamPreview';
+import AIAgents from './components/AIAgents';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import RefundReturns from './components/RefundReturns';
 
@@ -40,6 +41,9 @@ const LandingPage = ({ onStartChat }) => {
     
       <Features />
       <EstimateTeamPreview />
+      <RevealOnScroll triggerOnce={false}>
+        <AIAgents />
+      </RevealOnScroll>
       <RevealOnScroll triggerOnce={false}>
         <ComparisonTable />
       </RevealOnScroll>

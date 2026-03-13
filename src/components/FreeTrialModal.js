@@ -209,7 +209,10 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="freetrial-modal-overlay fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4 overflow-y-auto">
+    <div
+      className="freetrial-modal-overlay fixed inset-0 z-[2000] flex items-center justify-center px-4 overflow-y-auto"
+      onClick={(e) => e.target === e.currentTarget && closeModal()}
+    >
       <div className="freetrial-modal-content relative w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl my-auto">
         <button
           type="button"
@@ -497,6 +500,23 @@ const FreeTrialModal = ({ isOpen, onClose }) => {
             align-items: flex-start !important;
             padding-top: 10px !important;
           }
+        }
+
+        /* ── Entry animations ── */
+        @keyframes ftOverlayIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes ftContentIn {
+          from { opacity: 0; transform: translateY(28px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        .freetrial-modal-overlay {
+          animation: ftOverlayIn 0.22s ease-out forwards;
+          background: rgba(0, 0, 0, 0.6);
+        }
+        .freetrial-modal-content {
+          animation: ftContentIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
       `}</style>
     </div>,
