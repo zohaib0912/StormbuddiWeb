@@ -63,8 +63,6 @@ const normalizePlans = (plans = []) => {
       const normalizedName = normalizePlanName(p.name);
       const matchingMonthly = monthlyLookup.get(normalizedName);
       const price = Number(p.price) || 0;
-      const discPrice = p.disc_price ? Number(p.disc_price) : 0;
-      const originalPrice = discPrice > 0 ? price + discPrice : null;
       let badgeText = null;
       if (matchingMonthly && matchingMonthly.price > 0) {
         const discount = ((matchingMonthly.price * 12 - price) / (matchingMonthly.price * 12)) * 100;
