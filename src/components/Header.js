@@ -350,7 +350,7 @@ const Header = () => {
                 }}
                 className="text-[#042D43] no-underline text-lg font-semibold uppercase tracking-[1px] inline-block bg-transparent border-none cursor-pointer p-0 text-left"
               >
-                Download
+                Download Mobile App
               </button>
             </li>
           </ul>
