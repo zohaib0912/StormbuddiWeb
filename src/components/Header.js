@@ -11,7 +11,6 @@ const Header = () => {
   const navLinks = [
     { href: '#home', label: 'Home' },
     { href: '#features', label: 'Features' },
-    { href: '#ai-field-agents', label: 'AI Agents' },
     { href: '#pricing', label: 'Pricing' },
     { href: '#about-us', label: 'About Us' },
     { href: '#contact-us', label: 'Contact Us' },
@@ -204,7 +203,7 @@ const Header = () => {
                             onClick={openDownloadModal}
                             className="text-[#042D43] no-underline text-[14px] font-semibold uppercase tracking-[0.5px] transition-colors duration-300 inline-block hover:text-[#A83119] bg-transparent border-none cursor-pointer p-0"
                           >
-                            Download
+                            Download Mobile App
                           </button>
                         </li>
                       </ul>
