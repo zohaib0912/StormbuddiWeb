@@ -38,7 +38,7 @@ const ComparisonTable = () => {
       spotio: '❌'
     },
     {
-      feature: 'Material Ordering (SRS, ABC, IDAC)',
+      feature: 'Material Ordering (SRS, ABC)',
       stormBuddi: '✔️ (direct integration)',
       salesRabbit: '❌',
       jobber: '❌',
