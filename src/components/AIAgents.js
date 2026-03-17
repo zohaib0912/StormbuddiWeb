@@ -283,7 +283,7 @@ const AIAgents = () => {
               <p className="text-[#94A3B8] text-sm font-semibold uppercase tracking-wider mb-2 mt-0">Add-On Price</p>
               <div className="flex items-start justify-center gap-0.5 mb-1">
                 <span className="text-white text-lg font-bold mt-2">+$</span>
-                <span className="text-white text-[52px] font-bold leading-none">50</span>
+                <span className="text-white text-[52px] font-bold leading-none">75</span>
               </div>
               <p className="text-[#94A3B8] text-sm mb-4 mt-0">/month</p>
               <div className="h-px bg-[rgba(255,255,255,0.1)] mb-4" />

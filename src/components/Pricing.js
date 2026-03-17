@@ -178,7 +178,7 @@ const ANNUAL_DISCOUNT     = 0.825;  // 17.5% off
 //   ],
 //
 // Rachel quarterly add-on (config/stripe.php):
-//   'rachel_quarterly_price' => 'price_XXXX',  // $138.75/quarter ($50 × 3 × 0.925)
+//   'rachel_quarterly_price' => 'price_XXXX',  // update Stripe to match $75/mo Rachel add-on
 //
 // In the checkout controller:
 //   if ($request->billing_cycle === 'quarterly') {
@@ -288,7 +288,7 @@ const Pricing = () => {
   const selectedPlan = activePlans.find((p) => getBaseId(p.id) === selectedPlanId) || activePlans[0];
 
   // Rachel price = period total (matches the same billing period as plan cards)
-  const rachelBasePrice = 50;
+  const rachelBasePrice = 75;
   const rachelPrice = useMemo(() => {
     if (billingCycle === 'quarterly') return parseFloat((rachelBasePrice * 3 * QUARTERLY_DISCOUNT).toFixed(2));
     if (billingCycle === 'annual')    return parseFloat((rachelBasePrice * 12 * ANNUAL_DISCOUNT).toFixed(2));
