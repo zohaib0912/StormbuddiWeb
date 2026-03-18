@@ -7,7 +7,7 @@ const agents = [
     role: 'Legal & Policy Assistant',
     tagline: 'Your insurance expert in your pocket',
     emoji: '⚖️',
-    image: '/images/agents/linda.png',
+    image: '/images/agents/Linda.jpeg',
     color: '#0E7490',
     bgLight: 'rgba(14,116,144,0.07)',
     borderColor: 'rgba(14,116,144,0.25)',
@@ -27,7 +27,7 @@ const agents = [
     role: 'Executive Assistant',
     tagline: 'Keeps your roofing business organized',
     emoji: '📋',
-    image: '/images/agents/ava.png',
+    image: '/images/agents/Eva.jpeg',
     color: '#7C3AED',
     bgLight: 'rgba(124,58,237,0.07)',
     borderColor: 'rgba(124,58,237,0.25)',
@@ -47,7 +47,7 @@ const agents = [
     role: 'Sales Associate',
     tagline: 'Helps close more roofing jobs',
     emoji: '💼',
-    image: '/images/agents/stan.png',
+    image: '/images/agents/Stan.jpeg',
     color: '#A83119',
     bgLight: 'rgba(168,49,25,0.07)',
     borderColor: 'rgba(168,49,25,0.25)',
@@ -66,7 +66,7 @@ const agents = [
     role: 'Social Media Manager',
     tagline: 'Promotes your roofing company automatically',
     emoji: '📱',
-    image: '/images/agents/sonny.png',
+    image: '/images/agents/Sonny.jpeg',
     color: '#0F766E',
     bgLight: 'rgba(15,118,110,0.07)',
     borderColor: 'rgba(15,118,110,0.25)',
@@ -97,8 +97,8 @@ const AgentCard = ({ agent, isActive, onClick }) => (
       transform: isActive ? 'translateY(-4px)' : 'none',
     }}
   >
-    {/* Agent photo */}
-    <div className="relative w-full mb-4 rounded-xl overflow-hidden flex-shrink-0" style={{ height: '200px' }}>
+    {/* Agent photo — full card width, square (1:1) */}
+    <div className="relative w-full mb-4 rounded-xl overflow-hidden flex-shrink-0 aspect-square">
       <img
         src={agent.image}
         alt={agent.name}
@@ -202,11 +202,29 @@ const AIAgents = () => {
             Meet Your AI Field Agents
           </h2>
           <p
-            className="text-lg md:text-xl text-[#4C6371] max-w-2xl mx-auto leading-relaxed mb-0"
+            className="text-lg md:text-xl text-[#4C6371] max-w-2xl mx-auto leading-relaxed mb-6"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
             Every Storm Buddi account comes with a team of AI-powered agents working beside you in the field — so you can close more jobs, stay organized, and never miss a lead.
           </p>
+          <div className="flex flex-col items-center justify-center gap-3">
+            <span className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              AI technology by
+            </span>
+            <a
+              href="https://ai.marblism.com/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A83119] focus-visible:ring-offset-2"
+              aria-label="Marbilism — open login (opens in new tab)"
+            >
+              <img
+                src="/images/Marbilism.jpeg"
+                alt="Marbilism"
+                className="h-10 md:h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+              />
+            </a>
+          </div>
         </div>
 
         {/* ── Agent cards grid ── */}
@@ -223,7 +241,7 @@ const AIAgents = () => {
 
         {/* ── Rachel — AI Receptionist Add-On ── */}
         <div
-          className="rounded-[28px] p-8 md:p-12 mb-20 relative overflow-hidden"
+          className="rounded-[28px] px-4 py-8 sm:px-8 md:p-12 mb-20 relative overflow-hidden"
           style={{
             background: 'linear-gradient(135deg, #042D43 0%, #064E6B 100%)',
             boxShadow: '0 20px 60px rgba(4,45,67,0.2)',
@@ -238,18 +256,26 @@ const AIAgents = () => {
             }}
           />
 
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-8 relative z-10">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-6 md:gap-8 relative z-10 min-w-0">
             {/* Left */}
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 bg-[rgba(168,49,25,0.25)] text-[#F87171] text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-5">
+            <div className="flex-1 w-full min-w-0">
+              <div className="inline-flex items-center gap-2 bg-[rgba(168,49,25,0.25)] text-[#F87171] text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 sm:mb-5">
                 Optional Add-On
               </div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                  📞
+              {/* Mobile: wide square + contain so artwork isn’t cropped; sm+: compact thumbnail */}
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-5 mb-4">
+                <div
+                  className="w-full max-w-[min(100%,320px)] sm:max-w-none mx-auto sm:mx-0 aspect-square sm:w-44 sm:h-44 sm:shrink-0 rounded-2xl overflow-hidden border-2 border-[rgba(255,255,255,0.15)] bg-[#042D43]"
+                  style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
+                >
+                  <img
+                    src="/images/agents/Rachel.jpeg"
+                    alt="Rachel — AI Receptionist"
+                    className="w-full h-full object-contain object-center sm:object-cover sm:object-top"
+                  />
                 </div>
-                <div>
-                  <h3 className="text-white text-[28px] font-bold mb-0 mt-0" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Rachel</h3>
+                <div className="text-center sm:text-left flex-1 min-w-0 pt-0 sm:pt-1">
+                  <h3 className="text-white text-[26px] sm:text-[28px] font-bold mb-0 mt-0" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Rachel</h3>
                   <p className="text-[#94A3B8] text-sm font-semibold mb-0">AI Receptionist</p>
                 </div>
               </div>
@@ -275,9 +301,9 @@ const AIAgents = () => {
               </ul>
             </div>
 
-            {/* Right — pricing callout */}
+            {/* Right — pricing callout (full width on mobile so nothing overflows) */}
             <div
-              className="flex-shrink-0 rounded-2xl p-8 text-center min-w-[220px]"
+              className="w-full md:w-auto md:flex-shrink-0 rounded-2xl p-6 sm:p-8 text-center md:min-w-[220px] max-w-full"
               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
             >
               <p className="text-[#94A3B8] text-sm font-semibold uppercase tracking-wider mb-2 mt-0">Add-On Price</p>

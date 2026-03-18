@@ -14,6 +14,8 @@ export default function EmailModal({
   billingTotal = 0,
   withReceptionist = false,
   rachelAmount = 0,
+  withFieldAgent = false,
+  fieldAgentAmount = 0,
   planAmount = 0,
 }) {
   const [email, setEmail] = useState('');
@@ -251,6 +253,8 @@ export default function EmailModal({
           plan_amount: planAmount,
           with_receptionist: withReceptionist,
           rachel_amount: rachelAmount,
+          with_field_agent: withFieldAgent,
+          field_agent_amount: fieldAgentAmount,
           total_amount: billingTotal,
         }),
       });
@@ -283,6 +287,8 @@ export default function EmailModal({
           plan_amount: planAmount,
           with_receptionist: withReceptionist,
           rachel_amount: rachelAmount,
+          with_field_agent: withFieldAgent,
+          field_agent_amount: fieldAgentAmount,
           total_amount: billingTotal,
         }),
       });
@@ -393,17 +399,25 @@ export default function EmailModal({
             padding: '12px 16px',
             marginBottom: '20px',
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: withReceptionist ? '6px' : '0', fontSize: '14px', color: '#4C6371' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: withReceptionist || withFieldAgent ? '6px' : '0', fontSize: '14px', color: '#4C6371' }}>
               <span>{planName}</span>
               <span style={{ fontWeight: '600', color: '#042D43' }}>
                 ${planAmount.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
               </span>
             </div>
             {withReceptionist && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px', color: '#4C6371' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: withFieldAgent ? '6px' : '6px', fontSize: '14px', color: '#4C6371' }}>
                 <span>Rachel — AI Receptionist</span>
                 <span style={{ fontWeight: '600', color: '#042D43' }}>
                   +${rachelAmount.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
+                </span>
+              </div>
+            )}
+            {withFieldAgent && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px', color: '#4C6371' }}>
+                <span>AI Field Agent</span>
+                <span style={{ fontWeight: '600', color: '#042D43' }}>
+                  +${fieldAgentAmount.toFixed(2)}/{billingCycle === 'monthly' ? 'mo' : billingCycle === 'quarterly' ? 'qtr' : 'yr'}
                 </span>
               </div>
             )}

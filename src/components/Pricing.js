@@ -196,6 +196,7 @@ const Pricing = () => {
   const [billingCycle, setBillingCycle]           = useState('monthly');
   const [selectedPlanId, setSelectedPlanId]       = useState('crm');
   const [withReceptionist, setWithReceptionist]   = useState(false);
+  const [withFieldAgent, setWithFieldAgent]       = useState(false);
   const [remotePlans, setRemotePlans]             = useState(null);
   const [isLoading, setIsLoading]                 = useState(false);
   const [fetchError, setFetchError]               = useState(null);
@@ -301,13 +302,32 @@ const Pricing = () => {
     return null;
   }, [billingCycle]);
 
+  const fieldAgentBasePrice = 125;
+  const fieldAgentPrice = useMemo(() => {
+    if (billingCycle === 'quarterly') return parseFloat((fieldAgentBasePrice * 3 * QUARTERLY_DISCOUNT).toFixed(2));
+    if (billingCycle === 'annual')    return parseFloat((fieldAgentBasePrice * 12 * ANNUAL_DISCOUNT).toFixed(2));
+    return fieldAgentBasePrice;
+  }, [billingCycle]);
+
+  const fieldAgentOriginalPrice = useMemo(() => {
+    if (billingCycle === 'quarterly') return fieldAgentBasePrice * 3;
+    if (billingCycle === 'annual')    return fieldAgentBasePrice * 12;
+    return null;
+  }, [billingCycle]);
+
   // Labels for the current billing period
   const cycleBilledLabel = billingCycle === 'quarterly' ? 'per quarter' : billingCycle === 'annual' ? 'per year' : 'per month';
   const cycleSuffix      = billingCycle === 'quarterly' ? '/Quarter'    : billingCycle === 'annual' ? '/Year'     : '/Month';
 
-  // Total = plan period price + Rachel period price (both are already period totals)
+  // Total = plan + optional add-ons (each price is already the period total)
   const billingTotal = selectedPlan
-    ? parseFloat((selectedPlan.price + (withReceptionist ? rachelPrice : 0)).toFixed(2))
+    ? parseFloat(
+        (
+          selectedPlan.price +
+          (withReceptionist ? rachelPrice : 0) +
+          (withFieldAgent ? fieldAgentPrice : 0)
+        ).toFixed(2)
+      )
     : 0;
 
   const handleGetStarted = (plan) => {
@@ -466,99 +486,188 @@ const Pricing = () => {
           })}
         </div>
 
-        {/* ── Rachel Add-On + Order Summary Row ── */}
-        <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 mb-16">
-
-          {/* Rachel toggle card */}
-          <div
-            className={`flex-1 rounded-[24px] p-7 border-2 cursor-pointer transition-all duration-300 ${
-              withReceptionist
-                ? 'border-[#042D43] shadow-[0_16px_50px_rgba(4,45,67,0.18)]'
-                : 'border-[rgba(4,45,67,0.12)] shadow-[0_6px_24px_rgba(4,45,67,0.06)] hover:border-[rgba(4,45,67,0.25)]'
-            }`}
-            style={{
-              background: withReceptionist
-                ? 'linear-gradient(135deg, #042D43 0%, #064E6B 100%)'
-                : '#fff',
-            }}
-            onClick={() => setWithReceptionist(!withReceptionist)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setWithReceptionist(!withReceptionist); }}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 ${
-                  withReceptionist ? 'bg-[rgba(255,255,255,0.1)]' : 'bg-[rgba(168,49,25,0.08)]'
-                }`}>
-                  📞
-                </div>
-                <div>
-                  <div className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-1.5 ${
-                    withReceptionist ? 'bg-[rgba(168,49,25,0.3)] text-[#F87171]' : 'bg-[rgba(168,49,25,0.1)] text-[#A83119]'
+        {/* ── Add-Ons (Rachel + AI Field Agent) + Order Summary ── */}
+        <div className="max-w-6xl mx-auto flex flex-col xl:flex-row gap-6 mb-16 items-stretch">
+          <div className="flex-1 flex flex-col lg:flex-row gap-6 min-w-0">
+            {/* Rachel toggle card */}
+            <div
+              className={`flex-1 min-w-0 rounded-[24px] p-7 border-2 cursor-pointer transition-all duration-300 ${
+                withReceptionist
+                  ? 'border-[#042D43] shadow-[0_16px_50px_rgba(4,45,67,0.18)]'
+                  : 'border-[rgba(4,45,67,0.12)] shadow-[0_6px_24px_rgba(4,45,67,0.06)] hover:border-[rgba(4,45,67,0.25)]'
+              }`}
+              style={{
+                background: withReceptionist
+                  ? 'linear-gradient(135deg, #042D43 0%, #064E6B 100%)'
+                  : '#fff',
+              }}
+              onClick={() => setWithReceptionist(!withReceptionist)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setWithReceptionist(!withReceptionist); }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 ${
+                    withReceptionist ? 'bg-[rgba(255,255,255,0.1)]' : 'bg-[rgba(168,49,25,0.08)]'
                   }`}>
-                    Optional Add-On
+                    📞
                   </div>
-                  <h3 className={`text-[20px] font-bold mb-0 mt-0 leading-tight ${withReceptionist ? 'text-white' : 'text-[#042D43]'}`}>
-                    Rachel — AI Receptionist
-                  </h3>
-                  <p className={`text-xs font-semibold mb-0 ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#A83119]'}`}>
-                    Never miss a call again · Up to 1,000 calls/month
-                  </p>
+                  <div className="min-w-0">
+                    <div className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-1.5 ${
+                      withReceptionist ? 'bg-[rgba(168,49,25,0.3)] text-[#F87171]' : 'bg-[rgba(168,49,25,0.1)] text-[#A83119]'
+                    }`}>
+                      Optional Add-On
+                    </div>
+                    <h3 className={`text-[20px] font-bold mb-0 mt-0 leading-tight ${withReceptionist ? 'text-white' : 'text-[#042D43]'}`}>
+                      Rachel — AI Receptionist
+                    </h3>
+                    <p className={`text-xs font-semibold mb-0 ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#A83119]'}`}>
+                      Never miss a call again · Up to 1,000 calls/month
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 flex-shrink-0 mt-1 ${
+                    withReceptionist ? 'bg-[#A83119]' : 'bg-gray-200'
+                  }`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                    withReceptionist ? 'left-6' : 'left-0.5'
+                  }`} />
                 </div>
               </div>
 
-              {/* Toggle switch */}
-              <div
-                className={`relative w-12 h-6 rounded-full transition-all duration-300 flex-shrink-0 mt-1 ${
-                  withReceptionist ? 'bg-[#A83119]' : 'bg-gray-200'
-                }`}
-              >
-                <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
-                  withReceptionist ? 'left-6' : 'left-0.5'
-                }`} />
-              </div>
-            </div>
-
-            <div className={`mt-5 flex flex-wrap gap-x-6 gap-y-2 ${withReceptionist ? 'text-[#CBD5E1]' : 'text-[#4C6371]'}`}>
-              {['Answers customer calls', 'Schedules inspections', 'Captures leads automatically', 'Handles basic customer questions'].map((cap, i) => (
-                <span key={i} className="flex items-center gap-1.5 text-sm">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M20 6L9 17L4 12" stroke="#A83119" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  {cap}
-                </span>
-              ))}
-            </div>
-
-            <div className={`mt-5 pt-4 border-t flex items-center justify-between ${withReceptionist ? 'border-[rgba(255,255,255,0.1)]' : 'border-gray-100'}`}>
-              <div>
-                <span className={`text-sm ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>Add to your plan</span>
-                {billingCycle !== 'monthly' && (
-                  <p className={`text-[11px] mt-0.5 mb-0 ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
-                    {billingCycle === 'quarterly' ? 'Billed quarterly · Save 7.5%' : 'Billed annually · Save 17.5%'}
-                  </p>
-                )}
-              </div>
-              <div className="text-right">
-                {billingCycle !== 'monthly' && rachelOriginalPrice && (
-                  <span className={`text-sm line-through mr-1 ${withReceptionist ? 'text-[#94A3B8]' : 'text-gray-400'}`}>
-                    ${rachelOriginalPrice}
+              <div className={`mt-5 flex flex-wrap gap-x-6 gap-y-2 ${withReceptionist ? 'text-[#CBD5E1]' : 'text-[#4C6371]'}`}>
+                {['Answers customer calls', 'Schedules inspections', 'Captures leads automatically', 'Handles basic customer questions'].map((cap, i) => (
+                  <span key={i} className="flex items-center gap-1.5 text-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                      <path d="M20 6L9 17L4 12" stroke="#A83119" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {cap}
                   </span>
-                )}
-                <span className={`text-[22px] font-bold ${withReceptionist ? 'text-white' : 'text-[#042D43]'}`}>
-                  +${rachelPrice.toFixed(2)}
-                </span>
-                <span className={`text-sm font-semibold ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
-                  {cycleSuffix}
-                </span>
+                ))}
+              </div>
+
+              <div className={`mt-5 pt-4 border-t flex flex-wrap items-end justify-between gap-2 ${withReceptionist ? 'border-[rgba(255,255,255,0.1)]' : 'border-gray-100'}`}>
+                <div>
+                  <span className={`text-sm ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>Add to your plan</span>
+                  {billingCycle !== 'monthly' && (
+                    <p className={`text-[11px] mt-0.5 mb-0 ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
+                      {billingCycle === 'quarterly' ? 'Billed quarterly · Save 7.5%' : 'Billed annually · Save 17.5%'}
+                    </p>
+                  )}
+                </div>
+                <div className="text-right">
+                  {billingCycle !== 'monthly' && rachelOriginalPrice && (
+                    <span className={`text-sm line-through mr-1 ${withReceptionist ? 'text-[#94A3B8]' : 'text-gray-400'}`}>
+                      ${rachelOriginalPrice}
+                    </span>
+                  )}
+                  <span className={`text-[22px] font-bold ${withReceptionist ? 'text-white' : 'text-[#042D43]'}`}>
+                    +${rachelPrice.toFixed(2)}
+                  </span>
+                  <span className={`text-sm font-semibold ${withReceptionist ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
+                    {cycleSuffix}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Field Agent — same layout as Rachel */}
+            <div
+              className={`flex-1 min-w-0 rounded-[24px] p-7 border-2 cursor-pointer transition-all duration-300 ${
+                withFieldAgent
+                  ? 'border-[#042D43] shadow-[0_16px_50px_rgba(4,45,67,0.18)]'
+                  : 'border-[rgba(4,45,67,0.12)] shadow-[0_6px_24px_rgba(4,45,67,0.06)] hover:border-[rgba(4,45,67,0.25)]'
+              }`}
+              style={{
+                background: withFieldAgent
+                  ? 'linear-gradient(135deg, #042D43 0%, #064E6B 100%)'
+                  : '#fff',
+              }}
+              onClick={() => setWithFieldAgent(!withFieldAgent)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setWithFieldAgent(!withFieldAgent); }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 ${
+                    withFieldAgent ? 'bg-[rgba(255,255,255,0.1)]' : 'bg-[rgba(168,49,25,0.08)]'
+                  }`} aria-hidden>
+                    🗺️
+                  </div>
+                  <div className="min-w-0">
+                    <div className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-1.5 ${
+                      withFieldAgent ? 'bg-[rgba(168,49,25,0.3)] text-[#F87171]' : 'bg-[rgba(168,49,25,0.1)] text-[#A83119]'
+                    }`}>
+                      Optional Add-On
+                    </div>
+                    <h3 className={`text-[20px] font-bold mb-0 mt-0 leading-tight ${withFieldAgent ? 'text-white' : 'text-[#042D43]'}`}>
+                      AI Field Agent
+                    </h3>
+                    <p className={`text-xs font-semibold mb-0 ${withFieldAgent ? 'text-[#94A3B8]' : 'text-[#A83119]'}`}>
+                      Linda, Ava, Stan & Sonny · Your AI team in the field
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 flex-shrink-0 mt-1 ${
+                    withFieldAgent ? 'bg-[#A83119]' : 'bg-gray-200'
+                  }`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${
+                    withFieldAgent ? 'left-6' : 'left-0.5'
+                  }`} />
+                </div>
+              </div>
+
+              <div className={`mt-5 flex flex-wrap gap-x-6 gap-y-2 ${withFieldAgent ? 'text-[#CBD5E1]' : 'text-[#4C6371]'}`}>
+                {[
+                  'Insurance & policy guidance',
+                  'Tasks, follow-ups & email drafts',
+                  'Lead follow-ups & scheduling',
+                  'Social posts & storm marketing',
+                ].map((cap, i) => (
+                  <span key={i} className="flex items-center gap-1.5 text-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                      <path d="M20 6L9 17L4 12" stroke="#A83119" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {cap}
+                  </span>
+                ))}
+              </div>
+
+              <div className={`mt-5 pt-4 border-t flex flex-wrap items-end justify-between gap-2 ${withFieldAgent ? 'border-[rgba(255,255,255,0.1)]' : 'border-gray-100'}`}>
+                <div>
+                  <span className={`text-sm ${withFieldAgent ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>Add to your plan</span>
+                  {billingCycle !== 'monthly' && (
+                    <p className={`text-[11px] mt-0.5 mb-0 ${withFieldAgent ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
+                      {billingCycle === 'quarterly' ? 'Billed quarterly · Save 7.5%' : 'Billed annually · Save 17.5%'}
+                    </p>
+                  )}
+                </div>
+                <div className="text-right">
+                  {billingCycle !== 'monthly' && fieldAgentOriginalPrice && (
+                    <span className={`text-sm line-through mr-1 ${withFieldAgent ? 'text-[#94A3B8]' : 'text-gray-400'}`}>
+                      ${fieldAgentOriginalPrice}
+                    </span>
+                  )}
+                  <span className={`text-[22px] font-bold ${withFieldAgent ? 'text-white' : 'text-[#042D43]'}`}>
+                    +${fieldAgentPrice.toFixed(2)}
+                  </span>
+                  <span className={`text-sm font-semibold ${withFieldAgent ? 'text-[#94A3B8]' : 'text-[#4C6371]'}`}>
+                    {cycleSuffix}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Order Summary */}
           <div
-            className="flex-shrink-0 w-full lg:w-[280px] rounded-[24px] p-7 flex flex-col justify-between"
+            className="flex-shrink-0 w-full xl:w-[300px] rounded-[24px] p-7 flex flex-col justify-between"
             style={{
               background: 'linear-gradient(135deg, #042D43 0%, #073F5C 100%)',
               boxShadow: '0 16px 50px rgba(4,45,67,0.2)',
@@ -591,6 +700,14 @@ const Pricing = () => {
                       <span className="text-[#CBD5E1] text-sm">Rachel Add-On</span>
                       <span className="text-white text-sm font-semibold">
                         +${rachelPrice.toFixed(2)}{cycleSuffix}
+                      </span>
+                    </div>
+                  )}
+                  {withFieldAgent && (
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[#CBD5E1] text-sm">AI Field Agent</span>
+                      <span className="text-white text-sm font-semibold">
+                        +${fieldAgentPrice.toFixed(2)}{cycleSuffix}
                       </span>
                     </div>
                   )}
@@ -650,6 +767,8 @@ const Pricing = () => {
         billingTotal={billingTotal}
         withReceptionist={withReceptionist}
         rachelAmount={withReceptionist ? rachelPrice : 0}
+        withFieldAgent={withFieldAgent}
+        fieldAgentAmount={withFieldAgent ? fieldAgentPrice : 0}
         planAmount={selectedPlan ? selectedPlan.price : 0}
       />
       <DemoModal
