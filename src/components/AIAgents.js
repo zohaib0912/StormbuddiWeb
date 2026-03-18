@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+const MARBLISM_LOGIN_URL = 'https://ai.marblism.com/login';
 
 const agents = [
   {
@@ -81,31 +83,21 @@ const agents = [
   },
 ];
 
-const AgentCard = ({ agent, isActive, onClick }) => (
-  <div
-    onClick={onClick}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
-    className="relative flex flex-col rounded-[22px] p-6 cursor-pointer transition-all duration-300 border-2"
-    style={{
-      background: isActive ? agent.bgLight : '#fff',
-      borderColor: isActive ? agent.color : 'rgba(226,232,240,0.8)',
-      boxShadow: isActive
-        ? `0 12px 40px ${agent.bgLight}`
-        : '0 4px 20px rgba(4,45,67,0.05)',
-      transform: isActive ? 'translateY(-4px)' : 'none',
-    }}
+const AgentCard = ({ agent }) => (
+  <a
+    href={MARBLISM_LOGIN_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="relative flex flex-col rounded-[22px] p-6 transition-all duration-300 border-2 no-underline text-inherit bg-white border-[rgba(226,232,240,0.8)] shadow-[0_4px_20px_rgba(4,45,67,0.05)] hover:-translate-y-1 hover:border-[color:var(--agent-accent)] hover:shadow-[0_12px_40px_rgba(4,45,67,0.1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A83119] focus-visible:ring-offset-2"
+    style={{ '--agent-accent': agent.color }}
+    aria-label={`${agent.name} — open Marbilism (new tab)`}
   >
-    {/* Agent photo — full card width, square (1:1) */}
     <div className="relative w-full mb-4 rounded-xl overflow-hidden flex-shrink-0 aspect-square">
       <img
         src={agent.image}
-        alt={agent.name}
-        className="w-full h-full object-cover object-top"
-        style={{ display: 'block' }}
+        alt=""
+        className="w-full h-full object-cover object-top block"
       />
-      {/* Colour tint bar at bottom */}
       <div
         className="absolute bottom-0 left-0 right-0 h-1"
         style={{ background: agent.color }}
@@ -143,22 +135,13 @@ const AgentCard = ({ agent, isActive, onClick }) => (
       ))}
     </ul>
 
-    {/* Example bubble */}
     <div
       className="mt-auto rounded-xl px-4 py-3 text-xs leading-relaxed italic"
       style={{ background: agent.bgLight, color: '#4C6371', borderLeft: `3px solid ${agent.color}` }}
     >
       {agent.example}
     </div>
-
-    {/* Active indicator dot */}
-    {isActive && (
-      <span
-        className="absolute top-4 right-4 w-2.5 h-2.5 rounded-full"
-        style={{ background: agent.color }}
-      />
-    )}
-  </div>
+  </a>
 );
 
 const advantageItems = [
@@ -169,10 +152,7 @@ const advantageItems = [
   { label: 'Marketing Tools', icon: '📣' },
 ];
 
-const AIAgents = () => {
-  const [activeAgent, setActiveAgent] = useState('linda');
-
-  return (
+const AIAgents = () => (
     <section id="ai-agents" className="relative py-24 overflow-hidden" style={{ background: '#F8FAFC' }}>
       {/* Subtle background pattern */}
       <div
@@ -212,7 +192,7 @@ const AIAgents = () => {
               AI technology by
             </span>
             <a
-              href="https://ai.marblism.com/login"
+              href={MARBLISM_LOGIN_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A83119] focus-visible:ring-offset-2"
@@ -230,22 +210,21 @@ const AIAgents = () => {
         {/* ── Agent cards grid ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {agents.map((agent) => (
-            <AgentCard
-              key={agent.id}
-              agent={agent}
-              isActive={activeAgent === agent.id}
-              onClick={() => setActiveAgent(agent.id)}
-            />
+            <AgentCard key={agent.id} agent={agent} />
           ))}
         </div>
 
-        {/* ── Rachel — AI Receptionist Add-On ── */}
-        <div
-          className="rounded-[28px] px-4 py-8 sm:px-8 md:p-12 mb-20 relative overflow-hidden"
+        {/* ── Rachel — AI Receptionist Add-On (whole card → Marbilism) ── */}
+        <a
+          href={MARBLISM_LOGIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-[28px] px-4 py-8 sm:px-8 md:p-12 mb-20 relative overflow-hidden block no-underline text-inherit cursor-pointer transition-all duration-300 hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F87171] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8FAFC]"
           style={{
             background: 'linear-gradient(135deg, #042D43 0%, #064E6B 100%)',
             boxShadow: '0 20px 60px rgba(4,45,67,0.2)',
           }}
+          aria-label="Rachel AI Receptionist add-on — open Marbilism (new tab)"
         >
           {/* Decorative glow */}
           <div
@@ -270,7 +249,7 @@ const AIAgents = () => {
                 >
                   <img
                     src="/images/agents/Rachel.jpeg"
-                    alt="Rachel — AI Receptionist"
+                    alt=""
                     className="w-full h-full object-contain object-center sm:object-cover sm:object-top"
                   />
                 </div>
@@ -318,7 +297,7 @@ const AIAgents = () => {
               </p>
             </div>
           </div>
-        </div>
+        </a>
 
         {/* ── Storm Buddi Advantage ── */}
         <div className="text-center mb-12">
@@ -413,7 +392,6 @@ const AIAgents = () => {
 
       </div>
     </section>
-  );
-};
+);
 
 export default AIAgents;
