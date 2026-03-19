@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import FreeTrialModal from './FreeTrialModal';
 
 const Footer = () => {
   const [hoveredLink, setHoveredLink] = useState(null);
-  const [isFreeTrialModalOpen, setIsFreeTrialModalOpen] = useState(false);
-
-  const openFreeTrialModal = () => setIsFreeTrialModalOpen(true);
-  const closeFreeTrialModal = () => setIsFreeTrialModalOpen(false);
 
   const quickLinks = [
     { name: 'Privacy Policy', href: '/privacy-policy', isRoute: true },
@@ -48,14 +43,12 @@ const Footer = () => {
                   
                   <div className="mt-auto">
                     <div className="input-group flex justify-center">
-                      <button
-                        type="button"
-                        name="Signup"
-                        onClick={openFreeTrialModal}
-                        className="bg-gradient-to-br from-[#A83119] to-[#D1452A] text-white border-none py-4 px-8 rounded-[25px] text-[15px] font-bold cursor-pointer transition-all duration-300 shadow-[0_6px_20px_rgba(168,49,25,0.4)] tracking-wide relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(168,49,25,0.5)]"
+                      <a
+                        href="#pricing"
+                        className="inline-block text-center bg-gradient-to-br from-[#A83119] to-[#D1452A] text-white border-none py-4 px-8 rounded-[25px] text-[15px] font-bold cursor-pointer transition-all duration-300 shadow-[0_6px_20px_rgba(168,49,25,0.4)] tracking-wide no-underline relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(168,49,25,0.5)]"
                       >
-                        Sign Up Now
-                      </button>
+                        View Pricing
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -293,10 +286,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <FreeTrialModal 
-        isOpen={isFreeTrialModalOpen} 
-        onClose={closeFreeTrialModal}
-      />
     </footer>
   );
 };

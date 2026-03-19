@@ -106,13 +106,6 @@ const ComparisonTable = () => {
       salesRabbit: 'No',
       jobber: 'No',
       spotio: 'Yes'
-    },
-    {
-      feature: 'Free Trial',
-      stormBuddi: 'Yes',
-      salesRabbit: 'Yes',
-      jobber: 'Yes',
-      spotio: 'Yes'
     }
   ];
 

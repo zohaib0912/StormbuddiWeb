@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+/** Same destination as AI Agents section (Marbilism login). */
+const MARBLISM_URL = 'https://ai.marblism.com/login';
+
 const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -212,10 +215,10 @@ const Header = () => {
                   </li>
                 </ul>
 
-                {/* Right: NRCA and WHOV Logos - Far Right on Mobile */}
-                <ul className="nav navbar-ul pull-right justify-content-end right-element-exist flex items-center shrink-0 m-0 p-0 list-none order-3 md:order-none">
+                {/* Right: NRCA, WHOV, Marbilism — desktop only; all three live in hamburger drawer on mobile */}
+                <ul className="nav navbar-ul pull-right justify-content-end right-element-exist hidden md:flex items-center shrink-0 m-0 p-0 list-none md:order-none">
                   <li>
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-end">
                       {/* NRCA Logo */}
                       <a 
                         href="https://www.nrca.net/" 
@@ -226,12 +229,12 @@ const Header = () => {
                         <img
                           src="/images/LOGO2.png"
                           alt="NRCA Logo"
-                          className="h-[40px] md:h-[80px] w-auto object-contain"
+                          className="h-[44px] md:h-[88px] w-auto object-contain"
                           onError={(e) => {
                             e.target.style.display = 'none';
                             if (e.target.parentElement) {
                               e.target.parentElement.innerHTML = `
-                                <div class="h-[40px] md:h-[80px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                <div class="h-[44px] md:h-[88px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
                                   <div class="text-xl md:text-3xl">🏆</div>
                                 </div>
                               `;
@@ -248,12 +251,12 @@ const Header = () => {
                         <img
                           src="/images/WHOV.png"
                           alt="WHOV Logo"
-                          className="h-[40px] md:h-[80px] w-auto object-contain"
+                          className="h-[44px] md:h-[88px] w-auto object-contain"
                           onError={(e) => {
                             e.target.style.display = 'none';
                             if (e.target.parentElement) {
                               e.target.parentElement.innerHTML = `
-                                <div class="h-[40px] md:h-[80px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                <div class="h-[44px] md:h-[88px] w-[60px] md:w-[100px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
                                   <div class="text-xl md:text-3xl">🏅</div>
                                 </div>
                               `;
@@ -261,6 +264,23 @@ const Header = () => {
                           }}
                         />
                       </button>
+                      {/* Marbilism */}
+                      <a
+                        href={MARBLISM_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center transition-opacity duration-300 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A83119] focus-visible:ring-offset-2 rounded-md"
+                        aria-label="Marbilism — opens in new tab"
+                      >
+                        <img
+                          src="/images/Marbilism.jpeg"
+                          alt="Marbilism"
+                          className="h-[48px] md:h-[92px] w-auto max-w-[160px] md:max-w-[220px] object-contain"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </a>
                     </div>
                   </li>
                 </ul>
@@ -355,9 +375,9 @@ const Header = () => {
               </button>
             </li>
           </ul>
-          {/* Mobile: NRCA and WHOV Logos */}
+          {/* Mobile: NRCA, WHOV, Marbilism */}
           <div className="mt-auto pt-6 border-t border-gray-200">
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               <a 
                 href="https://www.nrca.net/" 
                 target="_blank" 
@@ -368,12 +388,12 @@ const Header = () => {
                 <img
                   src="/images/LOGO2.png"
                   alt="NRCA Logo"
-                  className="h-[60px] w-auto object-contain"
+                  className="h-[56px] w-auto object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     if (e.target.parentElement) {
                       e.target.parentElement.innerHTML = `
-                        <div class="h-[60px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                        <div class="h-[56px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
                           <div class="text-2xl">🏆</div>
                         </div>
                       `;
@@ -390,12 +410,12 @@ const Header = () => {
                 <img
                   src="/images/WHOV.png"
                   alt="WHOV Logo"
-                  className="h-[60px] w-auto object-contain"
+                  className="h-[56px] w-auto object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     if (e.target.parentElement) {
                       e.target.parentElement.innerHTML = `
-                        <div class="h-[60px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                        <div class="h-[56px] w-[90px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
                           <div class="text-2xl">🏅</div>
                         </div>
                       `;
@@ -403,6 +423,23 @@ const Header = () => {
                   }}
                 />
               </button>
+              <a
+                href={MARBLISM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center w-full justify-center sm:w-auto transition-opacity duration-300 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A83119] rounded-md"
+                aria-label="Marbilism — opens in new tab"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <img
+                  src="/images/Marbilism.jpeg"
+                  alt="Marbilism"
+                  className="h-[58px] w-auto max-w-[min(100%,220px)] object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </a>
             </div>
           </div>
         </div>
